@@ -1,4 +1,5 @@
 This is a monorepo that aims deploying a Task/Activity manager using the following technologies:
+
 ### Frontend
 - [React](https://reactjs.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
