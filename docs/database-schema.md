@@ -4,7 +4,6 @@ Task
 - Content
 - StartDate
 - EndDate
-- Tags
 - Status
 - ActivityId
 `e.g. New, In Progress, Done, Cancelled` 
@@ -28,10 +27,21 @@ Activity
 - StartDate (optional)
 - EndDate (optional)
 - Status
-- Tags
 - ActivityType
  
 `e.g. Hobby, School, Job, Other`
 ActivityType
 - Id (auto incremented) 
 - Name
+
+
+ActivityTag Table
+- ActivityId (Foreign Key referencing Activity.Id)
+- TagId (Foreign Key referencing Tag.Id)
+- Primary Key: (ActivityId, TagId)
+
+TaskTag Table
+- TaskId (Foreign Key referencing Task.Id)
+- TagId (Foreign Key referencing Tag.Id)
+- Primary Key: (TaskId, TagId)
+
