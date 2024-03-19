@@ -9,7 +9,7 @@ function help() {
     echo "usage:"
     echo "  run:"
     echo "    $0 db               - start PostgreSQL database"
-    echo "    $0 manage_db        - start a PostgreSQL terminal session"
+    echo "    $0 manage-db        - start a PostgreSQL terminal session"
     echo "  stop:"
     echo "    $0 stop             - stop all docker-services"
 }
@@ -46,7 +46,7 @@ command=${1:-}
 
 case $command in
     db) start_database ;;
-    manage_db) manage_db ;;
+    manage-db) manage_db ;;
     stop) stop_services ;;
     -h) help ;;
     --help) help ;;

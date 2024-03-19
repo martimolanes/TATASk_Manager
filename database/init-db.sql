@@ -32,7 +32,6 @@ CREATE TABLE IF NOT EXISTS Activity (
     StartDate TIMESTAMP,
     EndDate TIMESTAMP,
     Status INTEGER REFERENCES Status(Id),
-    Tags TEXT, -- Consider using an association table for a normalized design
     ActivityType INTEGER REFERENCES ActivityType(Id)
 );
 
@@ -43,40 +42,64 @@ CREATE TABLE IF NOT EXISTS Task (
     Content TEXT,
     StartDate TIMESTAMP,
     EndDate TIMESTAMP,
-    Tags TEXT, -- Consider using an association table for a normalized design
     Status INTEGER REFERENCES Status(Id),
     ActivityId INTEGER REFERENCES Activity(Id)
+);
+
+-- Creating junction tables for Activity-Tag and Task-Tag relationships
+CREATE TABLE IF NOT EXISTS ActivityTag (
+    ActivityId INTEGER REFERENCES Activity(Id),
+    TagId INTEGER REFERENCES Tag(Id),
+    PRIMARY KEY (ActivityId, TagId)
+);
+
+CREATE TABLE IF NOT EXISTS TaskTag (
+    TaskId INTEGER REFERENCES Task(Id),
+    TagId INTEGER REFERENCES Tag(Id),
+    PRIMARY KEY (TaskId, TagId)
 );
 
 
 -- INSERT EXAMPLE DATA
 
--- Insert example statuses (assuming these were not already added)
-INSERT INTO Status (Title, Style) VALUES ('New', '#new');
-INSERT INTO Status (Title, Style) VALUES ('In Progress', '#inprogress');
-INSERT INTO Status (Title, Style) VALUES ('Done', '#done');
-INSERT INTO Status (Title, Style) VALUES ('Cancelled', '#cancelled');
+-- Insert new example statuses
+INSERT INTO Status (Title, Style) VALUES ('Planning', '#FFA07A');
+INSERT INTO Status (Title, Style) VALUES ('Ongoing', '#20B2AA');
+INSERT INTO Status (Title, Style) VALUES ('Completed', '#778899');
+INSERT INTO Status (Title, Style) VALUES ('Paused', '#FFD700');
 
--- Insert example tags
-INSERT INTO Tag (Name, Color) VALUES ('Sport', '#ff0000');
-INSERT INTO Tag (Name, Color) VALUES ('Course', '#00ff00');
-INSERT INTO Tag (Name, Color) VALUES ('Work', '#0000ff');
-INSERT INTO Tag (Name, Color) VALUES ('Hobby', '#ffff00');
+-- Insert new example tags
+INSERT INTO Tag (Name, Color) VALUES ('Education', '#8A2BE2');
+INSERT INTO Tag (Name, Color) VALUES ('Entertainment', '#DC143C');
+INSERT INTO Tag (Name, Color) VALUES ('Fitness', '#2E8B57');
+INSERT INTO Tag (Name, Color) VALUES ('Technology', '#DAA520');
 
--- Insert example activity types (assuming these were not already added)
-INSERT INTO ActivityType (Name) VALUES ('Hobby');
-INSERT INTO ActivityType (Name) VALUES ('School');
-INSERT INTO ActivityType (Name) VALUES ('Job');
-INSERT INTO ActivityType (Name) VALUES ('Other');
+-- Insert new example activity types
+INSERT INTO ActivityType (Name) VALUES ('Personal Development');
+INSERT INTO ActivityType (Name) VALUES ('Entertainment');
+INSERT INTO ActivityType (Name) VALUES ('Exercise');
+INSERT INTO ActivityType (Name) VALUES ('Educational');
 
--- Insert example activities
-INSERT INTO Activity (Title, Description, Url, StartDate, EndDate, Status, Tags, ActivityType)
-VALUES ('Learn Guitar', 'Learning guitar lessons online', 'http://guitarlessons.com', NOW(), NOW() + INTERVAL '1 year', 1, 'Hobby', 1),
-       ('Web Development Course', 'Complete web development course with React', 'http://webdev.com', NOW(), NOW() + INTERVAL '6 months', 2, 'Course', 2),
-       ('Fitness Challenge', '30 days fitness challenge', NULL, NOW(), NOW() + INTERVAL '30 days', 3, 'Sport', 3);
+-- Insert new example activities
+INSERT INTO Activity (Title, Description, Url, StartDate, EndDate, Status, ActivityType)
+VALUES 
+('Python Programming Course', 'An intensive course to master Python programming', 'http://pythoncourse.com', NOW(), NOW() + INTERVAL '3 months', 1, 4),
+('Marathon Training', 'Training schedule for upcoming marathon', NULL, NOW(), NOW() + INTERVAL '6 months', 2, 3),
+('Chess Tournament Preparation', 'Preparation plan for national chess tournament', NULL, NOW(), NOW() + INTERVAL '2 months', 1, 2);
 
--- Insert example tasks
-INSERT INTO Task (Name, Content, StartDate, EndDate, Tags, Status, ActivityId)
-VALUES ('Setup Development Environment', 'Install Node.js, React, and setup editor', NOW(), NOW() + INTERVAL '2 days', 'Work', 1, 2),
-       ('First Guitar Lesson', 'Learn the basics of guitar, focusing on chords', NOW(), NOW() + INTERVAL '1 day', 'Hobby', 1, 1),
-       ('Join Fitness Club', 'Sign up for the local fitness club membership', NOW(), NOW() + INTERVAL '1 day', 'Sport', 2, 3);
+-- Insert new example tasks
+INSERT INTO Task (Name, Content, StartDate, EndDate, Status, ActivityId)
+VALUES 
+('Install Python', 'Download and install the latest version of Python', NOW(), NOW() + INTERVAL '1 day', 1, 1),
+('Daily 5K Run', 'Run 5 kilometers every day to build stamina', NOW(), NOW() + INTERVAL '1 month', 2, 2),
+('Study Chess Openings', 'Study and memorize key chess openings', NOW(), NOW() + INTERVAL '2 weeks', 1, 3);
+
+-- Inserts into ActivityTag for linking activities and tags
+INSERT INTO ActivityTag (ActivityId, TagId) VALUES (1, 4); -- Python Programming Course with Technology tag
+INSERT INTO ActivityTag (ActivityId, TagId) VALUES (2, 3); -- Marathon Training with Fitness tag
+INSERT INTO ActivityTag (ActivityId, TagId) VALUES (3, 2); -- Chess Tournament Preparation with Entertainment tag
+
+-- Inserts into TaskTag for linking tasks and tags
+INSERT INTO TaskTag (TaskId, TagId) VALUES (1, 4); -- Install Python with Technology tag
+INSERT INTO TaskTag (TaskId, TagId) VALUES (2, 3); -- Daily 5K Run with Fitness tag
+INSERT INTO TaskTag (TaskId, TagId) VALUES (3, 2); -- Study Chess Openings with Entertainment tag
