@@ -18,7 +18,7 @@ When you have your `postgres.yml` properly set up, this file should define your 
 
     -  System: `PostgreSQL`
     -  Server: `db`
-    - Username: `postgres` (the default superuser account created by the PostgreSQL Docker image)
+    -  Username: `postgres` (the default superuser account created by the PostgreSQL Docker image)
     -  Password: `example` (as you've specified in your postgres.yml)
     -  Database: You can leave this blank initially to log into the PostgreSQL server itself.
 
