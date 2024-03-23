@@ -1,12 +1,12 @@
-import './App.css'
+import React from 'react';
+import LandingPage from './routes/LandingPage';
 
-function App() {
-
+const App: React.FC = () => {
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">Bun + Vite + React + typescript</h1>
-    </>
-  )
-}
+    <div className="App">
+      <LandingPage />
+    </div>
+  );
+};
 
-export default App
+export default App;
