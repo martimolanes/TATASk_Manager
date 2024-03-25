@@ -1,6 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LandingPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleGetStartedClick = () => {
+    navigate('/Dashboard');
+  };
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-200">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
@@ -13,7 +20,7 @@ const LandingPage: React.FC = () => {
         </p>
         <div className="mt-5">
           <a 
-            href="/signup" 
+            onClick={handleGetStartedClick}
             className="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
             Get Started
           </a>
