@@ -5,57 +5,57 @@
 
 -- Create Status table
 CREATE TABLE IF NOT EXISTS Status (
-    Id SERIAL PRIMARY KEY,
-    Title VARCHAR(255) NOT NULL,
-    Style VARCHAR(255)
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    style VARCHAR(255)
 );
 
 -- Create Tag table
 CREATE TABLE IF NOT EXISTS Tag (
-    Id SERIAL PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL,
-    Color VARCHAR(255)
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    color VARCHAR(255)
 );
 
 -- Create ActivityType table
 CREATE TABLE IF NOT EXISTS ActivityType (
-    Id SERIAL PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
 );
 
 -- Create Activity table
 CREATE TABLE IF NOT EXISTS Activity (
-    Id SERIAL PRIMARY KEY,
-    Title VARCHAR(255) NOT NULL,
-    Description TEXT,
-    Url VARCHAR(255),
-    StartDate TIMESTAMP,
-    EndDate TIMESTAMP,
-    Status INTEGER REFERENCES Status(Id),
-    ActivityType INTEGER REFERENCES ActivityType(Id)
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    url VARCHAR(255),
+    startDate TIMESTAMP,
+    endDate TIMESTAMP,
+    status INTEGER REFERENCES Status(Id),
+    activityType INTEGER REFERENCES ActivityType(Id)
 );
 
 -- Create Task table
 CREATE TABLE IF NOT EXISTS Task (
-    Id SERIAL PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL,
-    Content TEXT,
-    StartDate TIMESTAMP,
-    EndDate TIMESTAMP,
-    Status INTEGER REFERENCES Status(Id),
-    ActivityId INTEGER REFERENCES Activity(Id)
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    content TEXT,
+    startDate TIMESTAMP,
+    endDate TIMESTAMP,
+    status INTEGER REFERENCES Status(Id),
+    activityId INTEGER REFERENCES Activity(Id)
 );
 
 -- Creating junction tables for Activity-Tag and Task-Tag relationships
 CREATE TABLE IF NOT EXISTS ActivityTag (
-    ActivityId INTEGER REFERENCES Activity(Id),
-    TagId INTEGER REFERENCES Tag(Id),
+    activityId INTEGER REFERENCES Activity(Id),
+    tagId INTEGER REFERENCES Tag(Id),
     PRIMARY KEY (ActivityId, TagId)
 );
 
 CREATE TABLE IF NOT EXISTS TaskTag (
-    TaskId INTEGER REFERENCES Task(Id),
-    TagId INTEGER REFERENCES Tag(Id),
+    taskId INTEGER REFERENCES Task(Id),
+    tagId INTEGER REFERENCES Tag(Id),
     PRIMARY KEY (TaskId, TagId)
 );
 
