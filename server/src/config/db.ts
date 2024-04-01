@@ -1,11 +1,14 @@
-import { Pool } from 'pg';
+import { Sequelize } from "sequelize";
 
-const pool = new Pool({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'postgres',
-    database: process.env.DB_NAME || 'postgres',
-    password: process.env.DB_PASSWORD || 'example',
-    port: parseInt(process.env.DB_PORT || '5432'),
-});
+//'postgres://user:pass@example.com:5432/dbname'
+//const sequalize = new Sequelize(process.env.DB_NAME || 'postgres', process.env.DB_USER || 'postgres', process.env.DB_PASSWORD || 'example', {
+//    host: process.env.DB_HOST || 'localhost',
+//    dialect: 'postgres',
+//});
 
-export default pool;
+const sequelize = new Sequelize(
+    `postgres://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || 'example'}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'postgres'}`
+);
+
+
+export default sequelize;
