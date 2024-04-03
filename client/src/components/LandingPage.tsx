@@ -5,7 +5,7 @@ const LandingPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleGetStartedClick = () => {
-    navigate('/Dashboard');
+    navigate('/dashboard');
   };
 
   return (

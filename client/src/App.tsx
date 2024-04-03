@@ -1,43 +1,48 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import LandingPage from './components/LandingPage';
-import Dashboard from './routes/Dashboard';
-import Tasks from './routes/Tasks';
-import Activities from './routes/Activities';
-import Statistics from './routes/Statistics';
+import Dashboard from './routes/dashboard';
+import Activities from './routes/activities';
+import Tasks from './routes/tasks';
+import Statistics from './routes/statistics';
 import Navigation from './components/Navigation';
-import { DataProvider } from './context/DataContext';
+import {DataProvider} from './context/DataContext';
 import './App.css';
 
-const App: React.FC = () => {
+const DashboardRoutes: React.FC = () => {
   return (
-    <DataProvider>
-      <Router>
-        <RoutesWithTransition />
-      </Router>
-    </DataProvider>
+    <Routes>
+      <Route index element={<Dashboard />} />
+      <Route path="activities" element={<Activities />} />
+      <Route path="tasks" element={<Tasks />} />
+      <Route path="statistics" element={<Statistics />} />
+    </Routes>
   );
 };
 
-const RoutesWithTransition: React.FC = () => {
+const AnimatedDashboardRoutes: React.FC = () => {
   const location = useLocation();
-
+  
   return (
-    <>
-      {location.pathname !== '/' && <Navigation />}
-      <TransitionGroup>
-        <CSSTransition key={location.key} classNames="page" timeout={300}>
-          <Routes location={location}>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/activities" element={<Activities />} />
-            <Route path="/statistics" element={<Statistics />} />
-          </Routes>
-        </CSSTransition>
-      </TransitionGroup>
-    </>
+    <TransitionGroup>
+      <CSSTransition key={location.key} classNames="page" timeout={300} unmountOnExit>
+        <DashboardRoutes />
+      </CSSTransition>
+    </TransitionGroup>
+  );
+};
+
+const App: React.FC = () => {
+  
+  return (
+    <DataProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="dashboard/*" element={<><Navigation /><AnimatedDashboardRoutes /></>} />
+        </Routes>
+      </Router>
+    </DataProvider>
   );
 };
 
