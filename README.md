@@ -43,3 +43,13 @@ Task/Activity creation should either use or simulate forms
 Tests should cover important features and areas 
 
     Additional information regarding of how to write tests will be provided later
+
+## Development
+### Docker
+For running our applicatinons, we are using `start-service.sh` script that will start our services.
+
+```bash
+# If you want to start using the repo, you can run the following command
+./start-service.sh
+```
+> Note: This script uses `docker` without `sudo` command, so you need to have your user in the `docker` group or run the script with `sudo` command.
