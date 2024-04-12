@@ -30,7 +30,7 @@ const Tabs = () => {
   const tabs = ['In Progress', 'Completed'];
 
   return (
-    <div className="flex space-x-2 mb-4">
+    <div className="flex space-x-2 mb-4 pl-4">
       {tabs.map(tab => (
         <button
           key={tab}
@@ -38,7 +38,7 @@ const Tabs = () => {
             console.log(`Setting active tab to ${tab}`);
             setActiveTab(tab)
           }}
-          className={`px-4 py-2 ${activeTab === tab ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          className={`px-5 py-3 rounded-b-lg ${activeTab === tab ? 'bg-blue-500 text-white' : 'bg-gray-200'} hover:shadow-xl`}
         >
           {tab}
         </button>
@@ -126,46 +126,32 @@ const Tasks = () => {
 
       <div className="p-4">
         <h2 className="text-2xl font-bold mb-4">Tasks</h2>
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">Content</th>
-              <th className="py-3 px-6 text-left">Status</th>
-              <th className="py-3 px-6 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 text-sm font-light">
-            {filteredTasks.map((task) => (
-              <tr
-                className="border-b border-gray-200 hover:bg-gray-100"
-                key={task.id}
-              >
-                <td className="py-3 px-6 text-left whitespace-nowrap">
-                  {task.content}
-                </td>
-                <td className="py-3 px-6 text-left">{task.status}</td>
-                <td className="py-3 px-6 text-center">
-                  <div className="flex item-center justify-center">
-                    <button
-                      onClick={() => handleEditTask(task)}
-                      className="mx-2 px-2 py-1 bg-yellow-500 text-white rounded"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteTask(task.id)}
-                      className="px-2 py-1 bg-red-500 text-white rounded"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredTasks.map((task) => (
+            <div key={task.id} className="bg-white shadow rounded-lg p-4">
+              <h3 className="text-lg font-bold mb-2">{task.content}</h3>
+              <p>
+                <strong>Status:</strong> {task.status}
+              </p>
+              <div className="mt-4">
+                <button
+                  onClick={() => handleEditTask(task)}
+                  className="mx-2 px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteTask(task.id)}
+                  className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
         {/* Form for adding or editing a task */}
-        <div className="mt-4">{}</div>
+        <div className="mt-4">{/* ... Your form inputs and buttons ... */}</div>
       </div>
     </>
   );
