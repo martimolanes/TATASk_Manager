@@ -11,9 +11,6 @@ Activity.belongsTo(Status, { foreignKey: 'status' });
 Activity.hasMany(Task, {
     foreignKey: 'activityid'
 });
-Task.belongsTo(Activity, {
-    foreignKey: 'activityid'
-});
 Task.belongsToMany(Tag, {
     through: TaskTag,
     foreignKey: 'taskid',

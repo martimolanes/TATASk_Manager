@@ -6,18 +6,13 @@ const router = express.Router();
 router.get('/', async (_, res) => {
     try {
         const tasks = await Task.findAll({
-            attributes: ['id', 'name', 'content', 'startDate', 'endDate'],
+            attributes: ['id', 'name', 'content', 'startDate', 'endDate', 'activityid'],
             include: [
                 {
                     model: Tag,
                     as: 'Tags',
                     through: { attributes: [] },
                 },
-                {
-                    model: Activity,
-                    as: 'Activity'
-                }
-
             ]
         }
         );
