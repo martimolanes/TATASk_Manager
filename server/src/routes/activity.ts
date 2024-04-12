@@ -1,5 +1,5 @@
 import express from 'express';
-import { Activity, ActivityType, Status } from '../models'
+import { Activity, ActivityType, Status, Tag } from '../models'
 
 const router = express.Router();
 
@@ -15,7 +15,12 @@ router.get('/', async (_, res) => {
                 {
                     model: Status,
                     as: 'Status'
-                }
+                },
+                {
+                    model: Tag,
+                    as: 'Tags',
+                    through: { attributes: [] },
+                },
             ]
         });
         res.json(activity);

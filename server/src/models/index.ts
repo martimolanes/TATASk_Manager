@@ -4,6 +4,7 @@ import { Status } from './Status';
 import { Task } from './Task';
 import { Tag } from './Tag';
 import { TaskTag } from './TaskTag';
+import { ActivityTag } from './ActivityTag';
 
 Activity.belongsTo(ActivityType, { foreignKey: 'activitytype' });
 Activity.belongsTo(Status, { foreignKey: 'status' });
@@ -19,6 +20,15 @@ Task.belongsToMany(Tag, {
 });
 Tag.belongsToMany(Task, {
     through: TaskTag,
+    foreignKey: 'tagid',
+});
+
+Activity.belongsToMany(Tag, {
+    through: ActivityTag,
+    foreignKey: 'activityid',
+});
+Tag.belongsToMany(Activity, {
+    through: ActivityTag,
     foreignKey: 'tagid',
 });
 
