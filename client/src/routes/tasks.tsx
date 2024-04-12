@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Task, useData } from "../context/DataContext";
+import { TabContext } from "../context/TabContext";
 
 const Modal = ({
   isOpen,
@@ -24,11 +25,47 @@ const Modal = ({
   );
 };
 
+const Tabs = () => {
+  const { activeTab, setActiveTab } = useContext(TabContext);
+  const tabs = ['In Progress', 'Completed'];
+
+  return (
+    <div className="flex space-x-2 mb-4">
+      {tabs.map(tab => (
+        <button
+          key={tab}
+          onClick={() => {
+            console.log(`Setting active tab to ${tab}`);
+            setActiveTab(tab)
+          }}
+          className={`px-4 py-2 ${activeTab === tab ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+        >
+          {tab}
+        </button>
+      ))}
+    </div>
+  );
+};
+
 const Tasks = () => {
   const { tasks, editTask, deleteTask } = useData();
-  const [currentTask, setCurrentTask] = useState<Task>(tasks[0]);
+  const { activeTab } = useContext(TabContext);
+  const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [editMode, setEditMode] = useState(false);
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
+  
+  useEffect(() => {
+    // Set currentTask to the first task when tasks are loaded
+    if (tasks.length > 0) {
+      setCurrentTask(tasks[0]);
+    }
+  }, [tasks]);
 
+  useEffect(() => {
+    const newFilteredTasks = tasks.filter(task => task.status === activeTab);
+    setFilteredTasks(newFilteredTasks);
+  }, [tasks, activeTab]);
+  
   const handleEditTask = (task: Task) => {
     setCurrentTask(task);
     setEditMode(true);
@@ -45,6 +82,7 @@ const Tasks = () => {
 
   return (
     <>
+      <Tabs />
       <Modal isOpen={editMode} onClose={() => setEditMode(false)}>
         <form
           onSubmit={(e) => {
@@ -67,7 +105,7 @@ const Tasks = () => {
               id="content"
               value={currentTask ? currentTask.content : ""}
               onChange={(e) =>
-                setCurrentTask({ ...currentTask, content: e.target.value })
+                currentTask && setCurrentTask({ ...currentTask, content: e.target.value })
               }
               onFocus={(e) => e.target.select()}
               className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
@@ -97,7 +135,7 @@ const Tasks = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
-            {tasks.map((task) => (
+            {filteredTasks.map((task) => (
               <tr
                 className="border-b border-gray-200 hover:bg-gray-100"
                 key={task.id}
@@ -127,7 +165,7 @@ const Tasks = () => {
           </tbody>
         </table>
         {/* Form for adding or editing a task */}
-        <div className="mt-4">{/* ... Your form inputs and buttons ... */}</div>
+        <div className="mt-4">{}</div>
       </div>
     </>
   );

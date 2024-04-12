@@ -8,13 +8,18 @@ import Statistics from './routes/statistics';
 import Navigation from './components/Navigation';
 import {DataProvider} from './context/DataContext';
 import './App.css';
+import { TabProvider } from './context/TabContext';
 
 const DashboardRoutes: React.FC = () => {
   return (
     <Routes>
       <Route index element={<Dashboard />} />
       <Route path="activities" element={<Activities />} />
-      <Route path="tasks" element={<Tasks />} />
+      <Route path="tasks" element={
+        <TabProvider>
+          <Tasks />
+        </TabProvider>
+      } />
       <Route path="statistics" element={<Statistics />} />
     </Routes>
   );
