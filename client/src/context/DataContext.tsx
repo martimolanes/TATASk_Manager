@@ -43,7 +43,7 @@ const initialTasks: Task[] = [
     content: "Review PR from John",
     startDate: "2024-03-21",
     endDate: "2024-03-22",
-    status: "New",
+    status: "Completed",
     activityId: 2,
   },
 ];
