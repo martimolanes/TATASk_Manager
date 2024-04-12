@@ -21,7 +21,6 @@ router.get('/', async (_, res) => {
             ]
         }
         );
-        console.log(tasks);
         res.json(tasks);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
