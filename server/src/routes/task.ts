@@ -1,11 +1,41 @@
 import express from 'express';
-import Task from '../models/task'
+import { Task, Tag, Activity } from '../models';
 
 const router = express.Router();
 
 router.get('/', async (_, res) => {
-    const activities = await Task.getAll();
-    res.json(activities);
+    try {
+        const tasks = await Task.findAll({
+            attributes: ['id', 'name', 'content', 'startDate', 'endDate'],
+            include: [
+                {
+                    model: Tag,
+                    as: 'Tags',
+                    attributes: ['id', 'name', 'color']
+                },
+                {
+                    model: Activity,
+                    as: 'Activity'
+                }
+
+            ]
+        }
+        );
+        console.log(tasks);
+        res.json(tasks);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
 });
+
+router.get('/:id', async (req, res) => {
+    try {
+        const contact = await Task.findByPk(req.params.id);
+        res.json(contact);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 export default router;

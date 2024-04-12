@@ -33,19 +33,4 @@ export const Task = sequelize.define('Task', {
         type: dataTypes.DATE,
         field: 'enddate'
     },
-    status: {
-        type: dataTypes.INTEGER,
-        references: {
-            model: 'Status',
-            key: 'id'
-        },
-    },
-    activityId: {
-        type: dataTypes.INTEGER,
-        references: {
-            model: 'Activity',
-            key: 'id'
-        },
-        field: 'activityid'
-    }
 }, { timestamps: false, tableName: 'task' });
