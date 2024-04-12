@@ -101,5 +101,6 @@ INSERT INTO ActivityTag (ActivityId, TagId) VALUES (3, 2); -- Chess Tournament P
 
 -- Inserts into TaskTag for linking tasks and tags
 INSERT INTO TaskTag (TaskId, TagId) VALUES (1, 4); -- Install Python with Technology tag
+INSERT INTO TaskTag (TaskId, TagId) VALUES (1, 3); -- Install Python with Entertainment tag
 INSERT INTO TaskTag (TaskId, TagId) VALUES (2, 3); -- Daily 5K Run with Fitness tag
 INSERT INTO TaskTag (TaskId, TagId) VALUES (3, 2); -- Study Chess Openings with Entertainment tag
