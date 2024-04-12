@@ -11,7 +11,7 @@ router.get('/', async (_, res) => {
                 {
                     model: Tag,
                     as: 'Tags',
-                    attributes: ['id', 'name', 'color']
+                    through: { attributes: [] },
                 },
                 {
                     model: Activity,
