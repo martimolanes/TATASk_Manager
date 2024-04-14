@@ -27,18 +27,18 @@ const Modal = ({
 
 const Tabs = () => {
   const { activeTab, setActiveTab } = useContext(TabContext);
-  const tabs = ['In Progress', 'Completed'];
+  const tabs = ["Planning", "On Going", "Completed", "Paused"];
 
   return (
     <div className="flex space-x-2 mb-4 pl-4">
-      {tabs.map(tab => (
+      {tabs.map((tab) => (
         <button
           key={tab}
           onClick={() => {
             console.log(`Setting active tab to ${tab}`);
-            setActiveTab(tab)
+            setActiveTab(tab);
           }}
-          className={`px-5 py-3 rounded-b-lg ${activeTab === tab ? 'bg-blue-500 text-white' : 'bg-gray-200'} hover:shadow-xl`}
+          className={`px-5 py-3 rounded-b-lg ${activeTab === tab ? "bg-blue-500 text-white" : "bg-gray-200"} hover:shadow-xl`}
         >
           {tab}
         </button>
@@ -53,7 +53,7 @@ const Tasks = () => {
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-  
+
   useEffect(() => {
     // Set currentTask to the first task when tasks are loaded
     if (tasks.length > 0) {
@@ -62,10 +62,10 @@ const Tasks = () => {
   }, [tasks]);
 
   useEffect(() => {
-    const newFilteredTasks = tasks.filter(task => task.status === activeTab);
+    const newFilteredTasks = tasks.filter((task) => task.status === activeTab);
     setFilteredTasks(newFilteredTasks);
   }, [tasks, activeTab]);
-  
+
   const handleEditTask = (task: Task) => {
     setCurrentTask(task);
     setEditMode(true);
@@ -73,7 +73,7 @@ const Tasks = () => {
 
   const handleDeleteTask = (taskId: number) => {
     const isConfirmed = window.confirm(
-      "Are you sure you want to delete this task?"
+      "Are you sure you want to delete this task?",
     );
     if (isConfirmed) {
       deleteTask(taskId);
@@ -105,7 +105,8 @@ const Tasks = () => {
               id="content"
               value={currentTask ? currentTask.content : ""}
               onChange={(e) =>
-                currentTask && setCurrentTask({ ...currentTask, content: e.target.value })
+                currentTask &&
+                setCurrentTask({ ...currentTask, content: e.target.value })
               }
               onFocus={(e) => e.target.select()}
               className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
@@ -132,6 +133,14 @@ const Tasks = () => {
               <h3 className="text-lg font-bold mb-2">{task.content}</h3>
               <p>
                 <strong>Status:</strong> {task.status}
+              </p>
+              <p>
+                <strong>Start Date:</strong>{" "}
+                {new Date(task.startDate).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>End Date:</strong>{" "}
+                {new Date(task.endDate).toLocaleDateString()}
               </p>
               <div className="mt-4">
                 <button
