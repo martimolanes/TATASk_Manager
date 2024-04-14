@@ -5,14 +5,14 @@ type TabContextType = {
   setActiveTab: (value: string) => void;
 };
 
-export const TabContext = createContext<TabContextType>({ activeTab: 'In Progress', setActiveTab: value => {} });
+export const TabContext = createContext<TabContextType>({ activeTab: 'Planning', setActiveTab: value => {} });
 
 interface TabProviderProps {
   children: ReactNode;
 }
 
 export const TabProvider: React.FC<TabProviderProps> = ({ children }) => {
-  const [activeTab, setActiveTab] = useState('In Progress');
+  const [activeTab, setActiveTab] = useState('Planning');
   return (
     <TabContext.Provider value={{ activeTab, setActiveTab }}>
       {children}
