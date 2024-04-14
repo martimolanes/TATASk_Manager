@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+} from "react";
+import { useTasks } from "./hooks/useTasks"; // Assuming these hooks are in a folder called hooks
+import { useActivities } from "./hooks/useActivities";
 
 export type Task = {
   id: number;
@@ -16,17 +23,6 @@ export type Activity = {
   endDate?: string;
   status: string;
   activityType: string;
-};
-
-type DataContextType = {
-  tasks: Task[];
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-  activities: Activity[];
-  setActivities: React.Dispatch<React.SetStateAction<Activity[]>>;
-  editActivity: (updatedActivity: Activity) => void;
-  deleteActivity: (activityId: number) => void;
-  editTask: (updatedTask: Task) => void;
-  deleteTask: (taskId: number) => void;
 };
 
 const initialTasks: Task[] = [
@@ -82,58 +78,56 @@ const initialActivities: Activity[] = [
   },
 ];
 
+interface DataContextType {
+  tasks: Task[];
+  activities: Activity[];
+  setTasks: Dispatch<SetStateAction<Task[]>>;
+  addTask: (task: Task) => Promise<void>;
+  updateTask: (task: Task) => Promise<void>;
+  deleteTask: (id: number) => Promise<void>;
+  setActivities: Dispatch<SetStateAction<Activity[]>>;
+  addActivity: (activity: Activity) => Promise<void>;
+  updateActivity: (activity: Activity) => Promise<void>;
+  deleteActivity: (id: number) => Promise<void>;
+}
+
 const DataContext = createContext<DataContextType>({
-  tasks: [],
+  tasks: initialTasks,
+  activities: initialActivities,
   setTasks: () => {},
-  activities: [],
+  addTask: () => new Promise(() => {}),
+  updateTask: () => new Promise(() => {}),
+  deleteTask: () => new Promise(() => {}),
   setActivities: () => {},
-  editActivity: () => {},
-  deleteActivity: () => {},
-  editTask: () => {},
-  deleteTask: () => {},
+  addActivity: () => new Promise(() => {}),
+  updateActivity: () => new Promise(() => {}),
+  deleteActivity: () => new Promise(() => {}),
 });
 
-export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const [activities, setActivities] = useState<Activity[]>(initialActivities);
-
-  const editActivity = (updatedActivity: Activity) => {
-    setActivities((prevActivities) =>
-      prevActivities.map((activity) =>
-        activity.id === updatedActivity.id ? updatedActivity : activity
-      )
-    );
-  };
-
-  const deleteActivity = (activityId: number) => {
-    setActivities((prevActivities) =>
-      prevActivities.filter((activity) => activity.id !== activityId)
-    );
-  };
-
-  const editTask = (updatedTask: Task) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
-  };
-
-  const deleteTask = (taskId: number) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-  };
+export const DataProvider = ({ children }: { children: React.ReactNode }) => {
+  const { tasks, setTasks, addTask, updateTask, deleteTask } =
+    useTasks(initialTasks);
+  const {
+    activities,
+    setActivities,
+    addActivity,
+    updateActivity,
+    deleteActivity,
+  } = useActivities(initialActivities);
 
   return (
     <DataContext.Provider
       value={{
         tasks,
         setTasks,
+        addTask,
+        updateTask,
+        deleteTask,
         activities,
         setActivities,
-        editActivity,
+        addActivity,
+        updateActivity,
         deleteActivity,
-        editTask,
-        deleteTask,
       }}
     >
       {children}
