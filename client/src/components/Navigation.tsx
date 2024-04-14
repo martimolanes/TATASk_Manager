@@ -42,7 +42,7 @@ const Navigation = () => {
                   <Link to="/">
                     <img
                       className="h-8 w-auto"
-                      src="./favicon.png"
+                      src="../favicon.png"
                       alt="TATASk logo"
                     />
                   </Link>

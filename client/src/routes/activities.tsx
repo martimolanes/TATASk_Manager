@@ -164,35 +164,42 @@ const Activities = () => {
 
       <div className="p-4">
         <h2 className="text-2xl font-bold mb-4">Activities</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {activities.map((activity) => (
-            <div key={activity.id} className="bg-white shadow rounded-lg p-4">
-              <h3 className="text-lg font-bold mb-2">{activity.name}</h3>
-              <p>
-                <strong>Type:</strong> {activity.activityType}
-              </p>
-              <p>
-                <strong>Start Date:</strong> {activity.startDate || "N/A"}
-              </p>
-              <p>
-                <strong>End Date:</strong> {activity.endDate || "N/A"}
-              </p>
-              <div className="mt-4">
-                <button
-                  onClick={() => handleEditActivity(activity)}
-                  className="mx-2 px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteActivity(activity.id)}
-                  className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
-                >
-                  Delete
-                </button>
+        <div className="flex flex-col w-full">
+          <div className="flex bg-gray-200 text-gray-600 uppercase text-sm leading-normal p-4">
+            <div className="flex-1">Name</div>
+            <div className="flex-1">Type</div>
+            <div className="flex-1">Start Date</div>
+            <div className="flex-1">End Date</div>
+
+            <div className="flex-1 text-center">Actions</div>
+          </div>
+          <div className="flex flex-col text-gray-600 text-sm font-light">
+            {activities.map((activity) => (
+              <div
+                className="flex border-b border-gray-200 hover:bg-gray-100 p-4"
+                key={activity.id}
+              >
+                <div className="flex-1">{activity.name}</div>
+                <div className="flex-1">{activity.activityType}</div>
+                <div className="flex-1">{activity.startDate}</div>
+                <div className="flex-1">{activity.endDate || "Ongoing"}</div>
+                <div className="flex-1 flex justify-center">
+                  <button
+                    onClick={() => handleEditActivity(activity)}
+                    className="mx-2 px-2 py-1 bg-yellow-500 text-white rounded"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteActivity(activity.id)}
+                    className="px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
         {/* Form for adding or editing an activity */}
         <div className="mt-4">{/* ... Your form inputs and buttons ... */}</div>
