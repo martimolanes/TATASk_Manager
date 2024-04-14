@@ -17,10 +17,10 @@ const Dashboard = () => {
     const activityProgress = totalActivities > 0 ? Math.round((upcomingActivities / totalActivities) * 100) : 0;
 
     return (
-        <div className="p-8">
-            <h2 className="text-3xl font-bold mb-6">Welcome to the TATASk Manager Dashboard!</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-blue-200 p-6 rounded-lg shadow-lg">
+        <div className="p-8 flex flex-col items-center">
+            <h2 className="text-3xl font-bold mb-6 text-center">Welcome to the TATASk Manager Dashboard!</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <div className="bg-blue-200 p-6 rounded-lg shadow-lg m-2">
                     <h3 className="text-2xl font-semibold mb-2 text-blue-900">Tasks Overview</h3>
                     <p className="text-lg text-blue-900">Total: <span className="font-semibold text-black">{totalTasks}</span></p>
                     <p className="text-lg text-blue-900">Completed: <span className="font-semibold text-black">{completedTasks}</span></p>
@@ -29,7 +29,7 @@ const Dashboard = () => {
                         <div style={{ width: `${taskProgress}%` }} className="h-full bg-blue-700 rounded"></div>
                     </div>
                 </div>
-                <div className="bg-green-200 p-6 rounded-lg shadow-lg">
+                <div className="bg-green-200 p-6 rounded-lg shadow-lg m-2">
                     <h3 className="text-2xl font-semibold mb-2 text-green-900">Activities Overview</h3>
                     <p className="text-lg text-green-900">Total: <span className="font-semibold text-black">{totalActivities}</span></p>
                     <p className="text-lg text-green-900">Upcoming: <span className="font-semibold text-black">{upcomingActivities}</span></p>
@@ -40,7 +40,7 @@ const Dashboard = () => {
                 </div>
             </div>
         </div>
-    );
+    );        
 }
 
 export default Dashboard;
