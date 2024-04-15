@@ -1,0 +1,33 @@
+meta {
+  name: tasks-POST
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3333/tasks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "test",
+    "content": "test content",
+    "startDate": "2024-04-12T09:37:24.655Z",
+    "endDate": "2024-04-13T09:37:24.655Z",
+    "activityid": 1,
+    "Tags": [
+      {
+        "id": 4,
+        "name": "Technology",
+        "color": "#DAA520"
+      },
+      {
+        "id": 3,
+        "name": "Fitness",
+        "color": "#2E8B57"
+      }
+    ]
+  }
+}

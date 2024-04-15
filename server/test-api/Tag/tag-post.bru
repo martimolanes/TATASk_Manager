@@ -1,0 +1,20 @@
+meta {
+  name: tag-post
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3333/tags
+  body: json
+  auth: none
+}
+
+body:json {
+  [
+    {
+      "name": "Jokes",
+      "color": "#DAA520"
+    }
+  ]
+}
