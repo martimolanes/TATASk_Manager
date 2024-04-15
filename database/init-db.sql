@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS Task (
     startDate TIMESTAMP,
     endDate TIMESTAMP,
     status INTEGER REFERENCES Status(Id),
-    activityId INTEGER REFERENCES Activity(Id)
+    activityId INTEGER REFERENCES Activity(Id) ON DELETE CASCADE
 );
 
 -- Creating junction tables for Activity-Tag and Task-Tag relationships
