@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
                 await TaskTag.create({ taskid: task.get('id'), tagid: tagInstance.get('id') });
             }
         }
-        res.status(201).json(task);
+        res.status(201).json({ message: 'Task created' });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -65,9 +65,8 @@ router.put('/:id', async (req, res) => {
             where: { id: params.id },
         });
 
+        await TaskTag.destroy({ where: { taskid: params.id } });
         if (body.Tags && body.Tags.length > 0) {
-            await TaskTag.destroy({ where: { taskid: params.id } });
-
             for (const tag of body.Tags) {
                 const [tagInstance] = await Tag.findOrCreate({ where: { name: tag.name } });
                 await TaskTag.create({ taskid: params.id, tagid: tagInstance.get('id') });
@@ -85,7 +84,7 @@ router.delete('/:id', async (req, res) => {
         await Task.destroy({
             where: { id: req.params.id },
         });
-        res.json({ message: 'Task deleted' });
+        res.status(204).json({ message: 'Task deleted' });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
