@@ -1,0 +1,29 @@
+meta {
+  name: activities-PUT
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3333/activities/2
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "PUT TEST",
+    "description": "test description",
+    "url": null,
+    "startDate": "2024-04-15T08:21:09.537Z",
+    "endDate": "2024-10-15T08:21:09.537Z",
+    "ActivityType": {
+      "name": "Programming"
+    },
+    "Status": {
+      "title": "Ongoing",
+      "style": "#20B2AA"
+    },
+    "Tags": []
+  }
+}

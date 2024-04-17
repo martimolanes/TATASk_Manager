@@ -1,0 +1,34 @@
+meta {
+  name: activity-POST
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3333/activities/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "test title",
+    "description": "test description",
+    "url": null,
+    "startDate": "2024-04-15T08:21:09.537Z",
+    "endDate": "2024-10-15T08:21:09.537Z",
+    "ActivityType": {
+      "name": "Exercise"
+    },
+    "Status": {
+      "title": "Ongoing",
+      "style": "#20B2AA"
+    },
+    "Tags": [
+      {
+        "name": "Fitness",
+        "color": "#2E8B57"
+      }
+    ]
+  }
+}

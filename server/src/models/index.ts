@@ -35,5 +35,7 @@ export {
     Status,
     Task,
     Tag,
+    TaskTag,
+    ActivityTag,
 };
 
