@@ -38,7 +38,9 @@ const Tabs = () => {
             console.log(`Setting active tab to ${tab}`);
             setActiveTab(tab);
           }}
-          className={`px-5 py-3 rounded-b-lg ${activeTab === tab ? "bg-blue-500 text-white" : "bg-gray-200"} hover:shadow-xl`}
+          className={`px-5 py-3 rounded-b-lg ${
+            activeTab === tab ? "bg-blue-500 text-white" : "bg-gray-200"
+          } hover:shadow-xl`}
         >
           {tab}
         </button>
@@ -48,6 +50,7 @@ const Tabs = () => {
 };
 
 const Tasks = () => {
+  return;
   const { tasks, editTask, deleteTask } = useData();
   const { activeTab } = useContext(TabContext);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
@@ -73,7 +76,7 @@ const Tasks = () => {
 
   const handleDeleteTask = (taskId: number) => {
     const isConfirmed = window.confirm(
-      "Are you sure you want to delete this task?",
+      "Are you sure you want to delete this task?"
     );
     if (isConfirmed) {
       deleteTask(taskId);
