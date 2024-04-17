@@ -43,19 +43,19 @@ CREATE TABLE IF NOT EXISTS Task (
     startDate TIMESTAMP,
     endDate TIMESTAMP,
     status INTEGER REFERENCES Status(Id),
-    activityId INTEGER REFERENCES Activity(Id)
+    activityId INTEGER REFERENCES Activity(Id) ON DELETE CASCADE
 );
 
 -- Creating junction tables for Activity-Tag and Task-Tag relationships
 CREATE TABLE IF NOT EXISTS ActivityTag (
-    activityId INTEGER REFERENCES Activity(Id),
-    tagId INTEGER REFERENCES Tag(Id),
+    activityId INTEGER REFERENCES Activity(Id) ON DELETE CASCADE,
+    tagId INTEGER REFERENCES Tag(Id) ON DELETE CASCADE,
     PRIMARY KEY (ActivityId, TagId)
 );
 
 CREATE TABLE IF NOT EXISTS TaskTag (
-    taskId INTEGER REFERENCES Task(Id),
-    tagId INTEGER REFERENCES Tag(Id),
+    taskId INTEGER REFERENCES Task(Id) ON DELETE CASCADE,
+    tagId INTEGER REFERENCES Tag(Id) ON DELETE CASCADE,
     PRIMARY KEY (TaskId, TagId)
 );
 
