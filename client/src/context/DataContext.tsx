@@ -24,22 +24,22 @@ export type Task = {
 };
 
 export type Activity = {
-  id: number;
+  id?: number;
   title: string;
   description: string;
   url?: string;
   startDate: string;
   endDate: string;
-  activityType: {
-    id: number;
+  ActivityType: {
+    id?: number;
     name: string;
   };
-  status: {
-    id: number;
+  Status: {
+    id?: number;
     title: string;
     style: string;
   };
-  tags: Tag[];
+  Tags: Tag[];
 };
 
 interface DataContextType {
@@ -53,6 +53,7 @@ interface DataContextType {
   addActivity: (activity: Activity) => Promise<void>;
   updateActivity: (activity: Activity) => Promise<void>;
   deleteActivity: (id: number) => Promise<void>;
+  loading: boolean; // Add loading to the context
 }
 
 const initialTasks: Task[] = [
@@ -74,6 +75,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     addActivity,
     updateActivity,
     deleteActivity,
+    loading, // Destructure loading from useActivities
   } = useActivities(initialActivities);
 
   return (
@@ -89,6 +91,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         addActivity,
         updateActivity,
         deleteActivity,
+        loading, // Provide loading state through context
       }}
     >
       {children}

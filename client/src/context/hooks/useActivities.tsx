@@ -12,30 +12,28 @@ export const useActivities = (initialActivities: Activity[]) => {
     try {
       const response = await axios.get("http://localhost:3333/activities");
       // Assuming the response data is correctly formatted and directly usable
-      setActivities(
-        response.data.map((activity: any) => ({
-          ...activity,
-          startDate: activity.startDate,
-          endDate: activity.endDate,
-          activityType: activity.ActivityType,
-          status: activity.Status,
-          tags: activity.Tags,
-        }))
-      );
+      setActivities((currentActivities) => {
+        const updatedActivities = response.data.reduce(
+          (acc: Activity[], newActivity: Activity) => {
+            const index = acc.findIndex((a) => a.id === newActivity.id);
+            if (index > -1) {
+              // Replace the existing activity with the new one directly from the response
+              acc[index] = newActivity;
+            } else {
+              // Add new activity if not found
+              acc.push(newActivity);
+            }
+            return acc;
+          },
+          [...currentActivities]
+        );
 
-      console.log(
-        "Fetching activities...",
-        response.data.map((activity: any) => ({
-          ...activity,
-          startDate: activity.startDate,
-          endDate: activity.endDate,
-          activityType: activity.ActivityType,
-          status: activity.Status,
-          tags: activity.Tags,
-        }))
-      );
+        return updatedActivities;
+      });
+
+      console.log("Fetching activities...", response.data);
     } catch (err) {
-      setError("Failed to fetch activities: " + err.message); // More descriptive error
+      setError("Failed to fetch activities: ");
     } finally {
       setLoading(false);
     }
@@ -47,40 +45,35 @@ export const useActivities = (initialActivities: Activity[]) => {
 
   const addActivity = async (activity: Activity) => {
     try {
-      const response = await axios.post("/activities", {
+      const response = await axios.post("http://localhost:3333/activities", {
         ...activity,
-        ActivityType: activity.activityType,
-        Status: activity.status,
-        Tags: activity.tags,
       });
-      setActivities((prev) => [...prev, response.data]);
-    } catch (err) {
-      setError("Failed to add activity: " + err.message);
+      console.log("Adding activity...", response.data);
+      fetchActivities();
+    } catch {
+      setError("Failed to add activity: ");
     }
   };
 
   const updateActivity = async (activity: Activity) => {
     try {
-      await axios.put(`/activities/${activity.id}`, {
+      await axios.put(`http://localhost:3333/activities/${activity.id}`, {
         ...activity,
-        ActivityType: activity.activityType,
-        Status: activity.status,
-        Tags: activity.tags,
       });
       setActivities((prev) =>
         prev.map((a) => (a.id === activity.id ? { ...a, ...activity } : a))
       );
     } catch (err) {
-      setError("Failed to update activity: " + err.message);
+      setError("Failed to update activity: ");
     }
   };
 
   const deleteActivity = async (id: number) => {
     try {
-      await axios.delete(`/activities/${id}`);
+      await axios.delete(`http://localhost:3333/activities/${id}`);
       setActivities((prev) => prev.filter((a) => a.id !== id));
     } catch (err) {
-      setError("Failed to delete activity: " + err.message);
+      setError("Failed to delete activity: ");
     }
   };
 
