@@ -96,6 +96,7 @@ const Activities = () => {
     if (currentActivity) {
       console.log("Submitting...", currentActivity);
       if (isNew) {
+        console.log("Adding new activity...", currentActivity);
         await addActivity(currentActivity);
       } else {
         await updateActivity(currentActivity);

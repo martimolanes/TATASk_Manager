@@ -31,13 +31,10 @@ export const useTasks = (initialTasks: Task[]) => {
 
   const addTask = async (task: Task) => {
     try {
-      const response = await axios.post("http://localhost:3333/tasks", task);
-      setTasks((prevTasks) => [
-        ...prevTasks,
-        { ...response.data, activityId: response.data.activityid },
-      ]);
-      console.log("Task added:", response.data);
+      await axios.post("http://localhost:3333/tasks", task);
+      fetchTasks();
     } catch (err) {
+      console.log(task);
       setError(err);
     }
   };
