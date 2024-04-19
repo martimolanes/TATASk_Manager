@@ -1,17 +1,20 @@
-import { useData } from "../context/DataContext"; // Adjust the import path as necessary
+import { useData } from "../context/DataContext";
 
 const Statistics = () => {
   const { tasks, activities } = useData();
+  const now = new Date();
 
-  // Calculate statistics
+  // Calculate task statistics
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(
-    (task) => task.status === "Completed"
-  ).length; // Assuming 'Completed' is the status for done tasks
+    (task) => task.endDate && new Date(task.endDate) < now
+  ).length; // Assuming completion is determined by endDate being in the past
+
+  // Calculate activity statistics
   const totalActivities = activities.length;
   const completedActivities = activities.filter(
-    (activity) => activity.status === "Completed"
-  ).length; // Similarly, assuming 'Completed' marks a done activity
+    (activity) => new Date(activity.endDate) < now
+  ).length;
 
   return (
     <div className="p-4">

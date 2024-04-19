@@ -1,8 +1,16 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useData } from "../context/DataContext";
+import { Task, useData } from "../context/DataContext";
 import { TabContext } from "../context/TabContext";
 
-const Modal = ({ isOpen, onClose, children }) => {
+const Modal = ({
+  isOpen,
+  onClose,
+  children,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center p-4">
@@ -76,7 +84,7 @@ const Tasks = () => {
     setEditMode(true);
   };
 
-  const formatDate = (date) => {
+  const formatDate = (date: Date) => {
     if (!date) return "";
     const d = new Date(date);
     let month = "" + (d.getMonth() + 1),
@@ -87,7 +95,7 @@ const Tasks = () => {
     return [year, month, day].join("-");
   };
 
-  const handleEditTask = (task) => {
+  const handleEditTask = (task: Task) => {
     const editedTask = {
       ...task,
       startDate: formatDate(task.startDate),
@@ -107,11 +115,11 @@ const Tasks = () => {
     setEditMode(false);
   };
 
-  const handleDeleteTask = async (id) => {
+  const handleDeleteTask = async (id: number) => {
     await deleteTask(id);
   };
 
-  const getTaskColor = (task) => {
+  const getTaskColor = (task: Task) => {
     const now = new Date();
     const startDate = new Date(task.startDate);
     const endDate = task.endDate ? new Date(task.endDate) : null;
