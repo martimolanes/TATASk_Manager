@@ -20,7 +20,7 @@ export type Task = {
   startDate: string;
   endDate: string;
   activityId: number;
-  tags: Tag[];
+  Tags: Tag[];
 };
 
 export type Activity = {

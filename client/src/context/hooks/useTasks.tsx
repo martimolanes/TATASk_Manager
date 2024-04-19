@@ -10,11 +10,17 @@ export const useTasks = (initialTasks: Task[]) => {
   const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/tasks");
-      setTasks(response.data);
+      const response = await axios.get("http://localhost:3333/tasks");
+      setTasks(
+        response.data.map((task) => ({
+          ...task,
+          Tags: task.Tags || [],
+        }))
+      );
+      console.log("Fetched tasks:", response.data);
       setLoading(false);
     } catch (err) {
-      setError(err as null);
+      setError(err);
       setLoading(false);
     }
   }, []);
@@ -25,30 +31,45 @@ export const useTasks = (initialTasks: Task[]) => {
 
   const addTask = async (task: Task) => {
     try {
-      const response = await axios.post("/tasks", task);
-      setTasks((prev) => [...prev, response.data]);
+      const response = await axios.post("http://localhost:3333/tasks", task);
+      setTasks((prevTasks) => [
+        ...prevTasks,
+        { ...response.data, activityId: response.data.activityid },
+      ]);
+      console.log("Task added:", response.data);
     } catch (err) {
-      setError(err as null);
+      setError(err);
     }
   };
 
   const updateTask = async (task: Task) => {
     try {
-      await axios.put(`/tasks/${task.id}`, task);
-      setTasks((prev) =>
-        prev.map((t) => (t.id === task.id ? { ...t, ...task } : t))
-      );
+      await axios.put(`http://localhost:3333/tasks/${task.id}`, task);
+
+      setTasks((prevTasks) => {
+        const updatedTasks = prevTasks.map((t) => {
+          if (t.id === task.id) {
+            const updatedTask = { ...t, ...task };
+            return updatedTask;
+          }
+          return t;
+        });
+
+        return updatedTasks;
+      });
     } catch (err) {
-      setError(err as null);
+      setError(err);
+      console.error("Failed to update task:", err);
     }
   };
 
   const deleteTask = async (id: number) => {
     try {
-      await axios.delete(`/tasks/${id}`);
-      setTasks((prev) => prev.filter((t) => t.id !== id));
+      await axios.delete(`http://localhost:3333/tasks/${id}`);
+      setTasks((prevTasks) => prevTasks.filter((t) => t.id !== id));
+      console.log("Task deleted:", id);
     } catch (err) {
-      setError(err as null);
+      setError(err);
     }
   };
 
