@@ -105,6 +105,22 @@ const Activities = () => {
     }
   };
 
+  const handleEditClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    activity: Activity
+  ) => {
+    event.stopPropagation(); // Prevent event from bubbling up to the parent onClick
+    handleEditActivity(activity);
+  };
+
+  const handleDeleteClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    activityId: number
+  ) => {
+    event.stopPropagation(); // Prevent event from bubbling up to the parent onClick
+    handleDeleteActivity(activityId);
+  };
+
   if (loading) return <div>Loading...</div>;
 
   return (
@@ -273,13 +289,13 @@ const Activities = () => {
               <div className="flex-1">{getStatus(activity)}</div>
               <div className="flex justify-center space-x-2">
                 <button
-                  onClick={() => handleEditActivity(activity)}
+                  onClick={(e) => handleEditClick(e, activity)}
                   className="px-2 py-1 bg-yellow-500 text-white rounded"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDeleteActivity(activity.id || -1)}
+                  onClick={(e) => handleDeleteClick(e, activity.id || -1)}
                   className="px-2 py-1 bg-red-500 text-white rounded"
                 >
                   Delete
