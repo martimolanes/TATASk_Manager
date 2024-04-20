@@ -12,9 +12,27 @@ const Modal = ({
   children: React.ReactNode;
 }) => {
   if (!isOpen) return null;
+
+  const handleBackgroundClick = (event) => {
+    if (event.target.id === "modal-backdrop") {
+      console.log("closing");
+      onClose();
+    }
+    console.log("closing2");
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-60 backdrop-blur-md flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg shadow-xl p-4 max-w-lg w-full z-50">
+    <div
+      id="modal-backdrop"
+      className="fixed inset-0 z-50 bg-black bg-opacity-60 backdrop-blur-md flex justify-center items-center p-4"
+      onClick={handleBackgroundClick}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl p-4 max-w-lg w-full z-50"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <button className="float-right text-xl font-semibold" onClick={onClose}>
           ×
         </button>
@@ -44,12 +62,34 @@ const Tabs = () => {
   );
 };
 
+const TagSelector = ({ availableTags, selectedTags, onSelectTag }) => {
+  return (
+    <div className="flex flex-wrap">
+      {availableTags.map((tag) => (
+        <button
+          key={tag.id}
+          type="button"
+          onClick={() => onSelectTag(tag.id)}
+          className={`m-1 px-2 py-1 rounded-full text-xs font-medium leading-none ${
+            selectedTags.includes(tag.id)
+              ? "bg-blue-500 text-white"
+              : "bg-gray-300 text-gray-800"
+          }`}
+        >
+          {tag.name} {selectedTags.includes(tag.id) ? "✓" : "+"}
+        </button>
+      ))}
+    </div>
+  );
+};
+
 const Tasks = () => {
   const { tasks, addTask, updateTask, deleteTask, tags, loading } = useData();
   const { activeTab } = useContext(TabContext);
   const [currentTask, setCurrentTask] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
     const now = new Date();
@@ -84,28 +124,44 @@ const Tasks = () => {
     });
     setEditMode(true);
   };
-
   const handleEditTask = (task: Task) => {
     setCurrentTask({
       ...task,
       startDate: task.startDate.split("T")[0],
       endDate: task.endDate ? task.endDate.split("T")[0] : "",
-      Tags: task.Tags.map((tag) => tag.id),
     });
+    console.log("editing");
+    setSelectedTags(task.Tags.map((tag) => tag.id));
     setEditMode(true);
+  };
+
+  const toggleTagSelection = (tagId) => {
+    setSelectedTags((prev) => {
+      const currentIndex = prev.indexOf(tagId);
+      const newSelectedTags = [...prev];
+
+      if (currentIndex === -1) {
+        newSelectedTags.push(tagId);
+      } else {
+        newSelectedTags.splice(currentIndex, 1);
+      }
+
+      return newSelectedTags;
+    });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const taskWithTags = {
       ...currentTask,
-      Tags: tags.filter((tag) => currentTask.Tags.includes(tag.id)), // Attach full tag objects before submission
+      Tags: tags.filter((tag) => selectedTags.includes(tag.id)),
     };
     if (taskWithTags.id) {
       await updateTask(taskWithTags);
     } else {
       await addTask(taskWithTags);
     }
+    console.log("submitting");
     setEditMode(false);
   };
 
@@ -127,6 +183,19 @@ const Tasks = () => {
   };
 
   const renderTags = (task) => {
+    if (task.Tags.length === 0) {
+      return (
+        <div className="absolute top-2 right-2">
+          <button
+            onClick={() => handleEditTask(task)}
+            className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-gray-300 bg-opacity-75 rounded-full whitespace-nowrap"
+          >
+            Add Tag
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className="absolute top-2 right-2 flex flex-col items-start">
         {task.Tags.map((tag, index) => (
@@ -224,32 +293,14 @@ const Tasks = () => {
                 />
               </div>
               <div className="mb-4">
-                <label
-                  htmlFor="tags"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label className="block text-sm font-medium text-gray-700">
                   Tags
                 </label>
-                <select
-                  multiple
-                  id="tags"
-                  value={currentTask ? currentTask.Tags : []}
-                  onChange={(e) =>
-                    setCurrentTask({
-                      ...currentTask,
-                      Tags: [...e.target.options]
-                        .filter((option) => option.selected)
-                        .map((option) => parseInt(option.value)),
-                    })
-                  }
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                >
-                  {tags.map((tag) => (
-                    <option key={tag.id} value={tag.id}>
-                      {tag.name}
-                    </option>
-                  ))}
-                </select>
+                <TagSelector
+                  availableTags={tags}
+                  selectedTags={selectedTags}
+                  onSelectTag={toggleTagSelection}
+                />
               </div>
               <div className="flex items-center justify-end mt-4">
                 <button
