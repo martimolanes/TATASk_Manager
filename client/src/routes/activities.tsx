@@ -179,10 +179,11 @@ const Activities = () => {
               >
                 Type
               </label>
-              <select
+              <input
+                type="text"
                 id="ActivityType"
                 name="ActivityType"
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-s"
                 value={currentActivity.ActivityType.name}
                 onChange={(e) =>
                   setCurrentActivity((prev) => ({
@@ -193,11 +194,7 @@ const Activities = () => {
                     },
                   }))
                 }
-              >
-                <option value="Job">Job</option>
-                <option value="School">School</option>
-                <option value="Personal">Personal</option>
-              </select>
+              ></input>
             </div>
             <div className="mb-4">
               <label
