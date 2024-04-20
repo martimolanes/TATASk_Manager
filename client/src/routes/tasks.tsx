@@ -62,29 +62,68 @@ const Tabs = () => {
   );
 };
 
-const TagSelector = ({ availableTags, selectedTags, onSelectTag }) => {
+const TagSelector = ({
+  availableTags,
+  selectedTags,
+  onSelectTag,
+  onCreateTag,
+}) => {
+  const [newTagName, setNewTagName] = useState("");
+  const [newTagColor, setNewTagColor] = useState("#000000"); // Default color
+
+  const handleCreateTag = () => {
+    onCreateTag({ name: newTagName, color: newTagColor });
+    setNewTagName("");
+    setNewTagColor("#000000"); // Reset to default after creation
+  };
+
   return (
-    <div className="flex flex-wrap">
-      {availableTags.map((tag) => (
+    <div>
+      <div className="flex flex-wrap">
+        {availableTags.map((tag) => (
+          <button
+            key={tag.id}
+            type="button"
+            onClick={() => onSelectTag(tag.id)}
+            className={`m-1 px-2 py-1 rounded-full text-xs font-medium leading-none ${
+              selectedTags.includes(tag.id)
+                ? "bg-blue-500 text-white"
+                : "bg-gray-300 text-gray-800"
+            }`}
+          >
+            {tag.name} {selectedTags.includes(tag.id) ? "✓" : "+"}
+          </button>
+        ))}
+      </div>
+      <div className="mt-2">
+        <input
+          type="text"
+          value={newTagName}
+          onChange={(e) => setNewTagName(e.target.value)}
+          placeholder="New tag name"
+          className="text-sm p-1 border rounded"
+        />
+        <input
+          type="color"
+          value={newTagColor}
+          onChange={(e) => setNewTagColor(e.target.value)}
+          className="ml-2 w-6 h-6 border-none rounded"
+        />
         <button
-          key={tag.id}
           type="button"
-          onClick={() => onSelectTag(tag.id)}
-          className={`m-1 px-2 py-1 rounded-full text-xs font-medium leading-none ${
-            selectedTags.includes(tag.id)
-              ? "bg-blue-500 text-white"
-              : "bg-gray-300 text-gray-800"
-          }`}
+          onClick={handleCreateTag}
+          className="ml-2 px-2 py-1 bg-green-500 text-white rounded text-xs"
         >
-          {tag.name} {selectedTags.includes(tag.id) ? "✓" : "+"}
+          Create Tag
         </button>
-      ))}
+      </div>
     </div>
   );
 };
 
 const Tasks = () => {
-  const { tasks, addTask, updateTask, deleteTask, tags, loading } = useData();
+  const { tasks, addTask, updateTask, deleteTask, tags, addTag, loading } =
+    useData();
   const { activeTab } = useContext(TabContext);
   const [currentTask, setCurrentTask] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -180,6 +219,10 @@ const Tasks = () => {
     } else {
       return "bg-yellow-200";
     }
+  };
+
+  const createTag = (tag) => {
+    addTag({ ...tag, id: Math.floor(Math.random() * 1000) });
   };
 
   const renderTags = (task) => {
@@ -300,6 +343,7 @@ const Tasks = () => {
                   availableTags={tags}
                   selectedTags={selectedTags}
                   onSelectTag={toggleTagSelection}
+                  onCreateTag={createTag} // Passing the new tag creation handler
                 />
               </div>
               <div className="flex items-center justify-end mt-4">
