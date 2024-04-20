@@ -122,35 +122,72 @@ const TagSelector = ({
 };
 
 const Tasks = () => {
-  const { tasks, addTask, updateTask, deleteTask, tags, addTag, loading } =
-    useData();
+  const {
+    tasks,
+    addTask,
+    updateTask,
+    deleteTask,
+    tags,
+    addTag,
+    activities,
+    loading,
+  } = useData();
   const { activeTab } = useContext(TabContext);
   const [currentTask, setCurrentTask] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
 
+  const [activityFilter, setActivityFilter] = useState("");
+
+  const handleActivityFilterChange = (event) => {
+    setActivityFilter(event.target.value);
+  };
+
   useEffect(() => {
     const now = new Date();
-    const newFilteredTasks = tasks.filter((task) => {
+    const filtered = tasks.filter((task) => {
       const startDate = new Date(task.startDate);
       const endDate = task.endDate ? new Date(task.endDate) : null;
-      switch (activeTab) {
-        case "All Tasks":
-          return task;
-        case "Planning":
-          return startDate > now;
-        case "On Going":
-          return startDate <= now && (!endDate || endDate >= now);
-        case "Completed":
-          return endDate && endDate < now;
-        default:
-          return task;
+
+      // Check if the task matches the activity filter
+      let matchesActivityFilter = false;
+      if (
+        activityFilter === "unlinked" &&
+        (task.activityid === undefined || task.activityid === null)
+      ) {
+        matchesActivityFilter = true;
+      } else if (
+        parseInt(activityFilter) > 0 &&
+        task.activityid === parseInt(activityFilter)
+      ) {
+        matchesActivityFilter = true;
+      } else if (!activityFilter) {
+        matchesActivityFilter = true; // No activity filter applied
       }
+
+      // Check if the task matches the tab filter
+      let matchesTabFilter = false;
+      switch (activeTab) {
+        case "Planning":
+          matchesTabFilter = startDate > now;
+          break;
+        case "On Going":
+          matchesTabFilter = startDate <= now && (!endDate || endDate >= now);
+          break;
+        case "Completed":
+          matchesTabFilter = endDate && endDate < now;
+          break;
+        default:
+          matchesTabFilter = true; // No tab filter applied or all tasks
+          break;
+      }
+
+      return matchesActivityFilter && matchesTabFilter;
     });
-    setCurrentTask(newFilteredTasks.length > 0 ? newFilteredTasks[0] : null);
-    setFilteredTasks(newFilteredTasks);
-  }, [tasks, activeTab]);
+
+    setFilteredTasks(filtered);
+  }, [tasks, activeTab, activityFilter]);
 
   const handleNewTask = () => {
     setCurrentTask({
@@ -220,6 +257,16 @@ const Tasks = () => {
       return "bg-yellow-200";
     }
   };
+  const getActivityTitleById = (activityid) => {
+    const activity = activities.find((act) => act.id === activityid);
+    return activity ? activity.title : "No linked activity";
+  };
+
+  const handleFilterByActivity = (activityid) => {
+    setFilteredTasks(tasks.filter((task) => task.activityid === activityid));
+  };
+
+  // Add a dropdown or another filter control similar to the activity selector above
 
   const createTag = (tag) => {
     addTag({ ...tag, id: Math.floor(Math.random() * 1000) });
@@ -345,6 +392,29 @@ const Tasks = () => {
                 />
               </div>
               <div className="mb-4">
+                <label
+                  htmlFor="activityFilter"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Filter by Activity
+                </label>
+                <select
+                  id="activityFilter"
+                  value={activityFilter}
+                  onChange={handleActivityFilterChange}
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                >
+                  <option value="">All Tasks</option>
+                  <option value="null">Tasks without Activity</option>
+                  {activities.map((activity) => (
+                    <option key={activity.id} value={activity.id}>
+                      {activity.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Tags
                 </label>
@@ -371,6 +441,29 @@ const Tasks = () => {
           >
             Add New Task
           </button>
+          <div className="mb-4">
+            <label
+              htmlFor="activityFilter"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Filter by Activity
+            </label>
+            <select
+              id="activityFilter"
+              value={activityFilter}
+              onChange={handleActivityFilterChange}
+              className="mt-1 block w-20% pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              <option value="">All Tasks</option>
+              <option value="unlinked">Tasks without Activity</option>
+              {activities.map((activity) => (
+                <option key={activity.id} value={activity.id}>
+                  {activity.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="p-4">
             <h2 className="text-2xl font-bold mb-4">Tasks</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -395,6 +488,13 @@ const Tasks = () => {
                       ? new Date(task.endDate).toLocaleDateString()
                       : "N/A"}
                   </p>
+
+                  {task.activityid && (
+                    <p>
+                      <strong>Activity:</strong>{" "}
+                      {getActivityTitleById(task.activityid)}
+                    </p>
+                  )}
                   <div className="mt-4">
                     <button
                       onClick={() => handleEditTask(task)}

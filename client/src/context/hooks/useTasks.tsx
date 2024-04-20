@@ -31,6 +31,7 @@ export const useTasks = (initialTasks: Task[]) => {
 
   const addTask = async (task: Task) => {
     try {
+      console.log("task", task);
       await axios.post("http://localhost:3333/tasks", task);
       fetchTasks();
     } catch (err) {
@@ -42,7 +43,7 @@ export const useTasks = (initialTasks: Task[]) => {
   const updateTask = async (task: Task) => {
     try {
       await axios.put(`http://localhost:3333/tasks/${task.id}`, task);
-
+      console.log("updating task", task);
       setTasks((prevTasks) => {
         const updatedTasks = prevTasks.map((t) => {
           if (t.id === task.id) {

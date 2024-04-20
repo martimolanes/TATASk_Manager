@@ -14,15 +14,15 @@ export type Tag = {
   color: string;
 };
 
-export type Task = {
-  id: number;
+interface Task {
+  id?: number;
   name: string;
   content: string;
   startDate: string;
-  endDate: string;
-  activityId: number;
+  endDate?: string;
   Tags: Tag[];
-};
+  activityid?: number | null; // Link to an activity
+}
 
 export type Activity = {
   id?: number;
