@@ -13,8 +13,8 @@ const Modal = ({
 }) => {
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg shadow-xl p-4 max-w-lg w-full">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-60 backdrop-blur-md flex justify-center items-center p-4">
+      <div className="bg-white rounded-lg shadow-xl p-4 max-w-lg w-full z-50">
         <button className="float-right text-xl font-semibold" onClick={onClose}>
           ×
         </button>
@@ -26,7 +26,7 @@ const Modal = ({
 
 const Tabs = () => {
   const { activeTab, setActiveTab } = useContext(TabContext);
-  const tabs = ["All Tasks", "Planning", "On Going", "Completed"]; // Updated tabs array
+  const tabs = ["All Tasks", "Planning", "On Going", "Completed"];
   return (
     <div className="flex space-x-2 mb-4 pl-4">
       {tabs.map((tab) => (
@@ -45,7 +45,7 @@ const Tabs = () => {
 };
 
 const Tasks = () => {
-  const { tasks, addTask, updateTask, deleteTask, loading } = useData();
+  const { tasks, addTask, updateTask, deleteTask, tags, loading } = useData();
   const { activeTab } = useContext(TabContext);
   const [currentTask, setCurrentTask] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -79,38 +79,32 @@ const Tasks = () => {
       content: "",
       startDate: new Date().toISOString().split("T")[0],
       endDate: new Date().toISOString().split("T")[0],
+      Tags: [],
       id: undefined,
     });
     setEditMode(true);
   };
 
-  const formatDate = (date: Date) => {
-    if (!date) return "";
-    const d = new Date(date);
-    let month = "" + (d.getMonth() + 1),
-      day = "" + d.getDate(),
-      year = d.getFullYear();
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
-    return [year, month, day].join("-");
-  };
-
   const handleEditTask = (task: Task) => {
-    const editedTask = {
+    setCurrentTask({
       ...task,
-      startDate: formatDate(task.startDate),
-      endDate: formatDate(task.endDate),
-    };
-    setCurrentTask(editedTask);
+      startDate: task.startDate.split("T")[0],
+      endDate: task.endDate ? task.endDate.split("T")[0] : "",
+      Tags: task.Tags.map((tag) => tag.id),
+    });
     setEditMode(true);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (currentTask && currentTask.id) {
-      await updateTask(currentTask);
+    const taskWithTags = {
+      ...currentTask,
+      Tags: tags.filter((tag) => currentTask.Tags.includes(tag.id)), // Attach full tag objects before submission
+    };
+    if (taskWithTags.id) {
+      await updateTask(taskWithTags);
     } else {
-      await addTask({ ...currentTask, activityId: 1 });
+      await addTask(taskWithTags);
     }
     setEditMode(false);
   };
@@ -130,6 +124,21 @@ const Tasks = () => {
     } else {
       return "bg-yellow-200";
     }
+  };
+
+  const renderTags = (task) => {
+    return (
+      <div className="absolute top-2 right-2 flex flex-col items-start">
+        {task.Tags.map((tag, index) => (
+          <span
+            key={index}
+            className="mb-1 last:mb-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full"
+          >
+            {tag.name}
+          </span>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -214,6 +223,34 @@ const Tasks = () => {
                   className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                 />
               </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="tags"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Tags
+                </label>
+                <select
+                  multiple
+                  id="tags"
+                  value={currentTask ? currentTask.Tags : []}
+                  onChange={(e) =>
+                    setCurrentTask({
+                      ...currentTask,
+                      Tags: [...e.target.options]
+                        .filter((option) => option.selected)
+                        .map((option) => parseInt(option.value)),
+                    })
+                  }
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                >
+                  {tags.map((tag) => (
+                    <option key={tag.id} value={tag.id}>
+                      {tag.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="flex items-center justify-end mt-4">
                 <button
                   type="submit"
@@ -236,8 +273,13 @@ const Tasks = () => {
               {filteredTasks.map((task) => (
                 <div
                   key={task.id}
-                  className={`shadow rounded-lg p-4 ${getTaskColor(task)}`}
+                  className={`relative shadow rounded-lg p-4 ${getTaskColor(
+                    task
+                  )}`}
                 >
+                  <div className="absolute top-2 right-2 flex flex-wrap">
+                    {renderTags(task)}
+                  </div>
                   <h3 className="text-lg font-bold mb-2">{task.name}</h3>
                   <p>
                     <strong>Start Date:</strong>{" "}

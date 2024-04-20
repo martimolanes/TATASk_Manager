@@ -4,8 +4,9 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import { useTasks } from "./hooks/useTasks"; // Assuming these hooks are in a folder called hooks
+import { useTasks } from "./hooks/useTasks";
 import { useActivities } from "./hooks/useActivities";
+import { useTags } from "./hooks/useTags"; // Make sure to import useTags
 
 export type Tag = {
   id: number;
@@ -45,6 +46,7 @@ export type Activity = {
 interface DataContextType {
   tasks: Task[];
   activities: Activity[];
+  tags: Tag[]; // Add tags to the context type
   setTasks: Dispatch<SetStateAction<Task[]>>;
   setActivities: Dispatch<SetStateAction<Activity[]>>;
   addTask: (task: Task) => Promise<void>;
@@ -53,30 +55,22 @@ interface DataContextType {
   addActivity: (activity: Activity) => Promise<void>;
   updateActivity: (activity: Activity) => Promise<void>;
   deleteActivity: (id: number) => Promise<void>;
-  loading: boolean; // Add loading to the context
+  addTag: (tag: Tag) => Promise<void>; // Function to add a tag
+  loading: boolean;
 }
-
-const initialTasks: Task[] = [
-  // Add your initial tasks here if needed, mapped to the new structure
-];
-
-const initialActivities: Activity[] = [
-  // Add your initial activities here if needed, mapped to the new structure
-];
 
 const DataContext = createContext<DataContextType | null>(null);
 
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
-  const { tasks, setTasks, addTask, updateTask, deleteTask } =
-    useTasks(initialTasks);
+  const { tasks, setTasks, addTask, updateTask, deleteTask } = useTasks([]);
   const {
     activities,
     setActivities,
     addActivity,
     updateActivity,
     deleteActivity,
-    loading, // Destructure loading from useActivities
-  } = useActivities(initialActivities);
+  } = useActivities([]);
+  const { tags, addTag, loading } = useTags(); // Use the useTags hook
 
   return (
     <DataContext.Provider
@@ -91,7 +85,9 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         addActivity,
         updateActivity,
         deleteActivity,
-        loading, // Provide loading state through context
+        tags, // Provide tags through context
+        addTag,
+        loading, // Ensure loading state reflects all hooks
       }}
     >
       {children}
