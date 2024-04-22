@@ -139,9 +139,18 @@ const Tasks = () => {
   const [selectedTags, setSelectedTags] = useState([]);
 
   const [activityFilter, setActivityFilter] = useState("");
+  const [linksToActivities, setLinksToActivities] = useState([]);
 
   const handleActivityFilterChange = (event) => {
     setActivityFilter(event.target.value);
+  };
+
+  const handleLinkToActivity = (event) => {
+    const activityId = event.target.value;
+    setCurrentTask((prevTask) => ({
+      ...prevTask,
+      activityid: activityId !== "null" ? parseInt(activityId) : null,
+    }));
   };
 
   useEffect(() => {
@@ -187,6 +196,7 @@ const Tasks = () => {
     });
 
     setFilteredTasks(filtered);
+    setLinksToActivities(filtered);
   }, [tasks, activeTab, activityFilter]);
 
   const handleNewTask = () => {
@@ -261,12 +271,6 @@ const Tasks = () => {
     const activity = activities.find((act) => act.id === activityid);
     return activity ? activity.title : "No linked activity";
   };
-
-  const handleFilterByActivity = (activityid) => {
-    setFilteredTasks(tasks.filter((task) => task.activityid === activityid));
-  };
-
-  // Add a dropdown or another filter control similar to the activity selector above
 
   const createTag = (tag) => {
     addTag({ ...tag, id: Math.floor(Math.random() * 1000) });
@@ -400,11 +404,11 @@ const Tasks = () => {
                 </label>
                 <select
                   id="activityFilter"
-                  value={activityFilter}
-                  onChange={handleActivityFilterChange}
+                  value={currentTask?.activityid || "null"} // Reflect the current state
+                  onChange={handleLinkToActivity}
                   className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                 >
-                  <option value="null">no link</option>
+                  <option value="null">No link</option>
                   {activities.map((activity) => (
                     <option key={activity.id} value={activity.id}>
                       {activity.title}
