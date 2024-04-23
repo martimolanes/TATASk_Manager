@@ -83,8 +83,8 @@ const Statistics = () => {
 
   return (
     <div className="p-2">
-      <h2 className="text-xl font-bold mb-2">Statistics Overview</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+      <h2 className="text-2xl font-bold m-4">Statistics Overview</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 m-12">
         {/* Summaries */}
         {/* Adjust each card to be more compact */}
         <div className="bg-gradient-to-r from-blue-500 to-blue-300 shadow rounded p-3 text-white">
