@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { Tag } from "../DataContext";
 
 export const useTags = () => {
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState<Tag[] | []>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const fetchTags = useCallback(async () => {
     setLoading(true);
@@ -13,7 +14,7 @@ export const useTags = () => {
       setTags(response.data);
       setLoading(false);
     } catch (err) {
-      setError(err);
+      setError(err as Error);
       setLoading(false);
     }
   }, []);
@@ -22,12 +23,12 @@ export const useTags = () => {
     fetchTags();
   }, [fetchTags]);
 
-  const addTag = async (newTag) => {
+  const addTag = async (newTag: Tag) => {
     try {
       await axios.post("http://localhost:3333/tags", newTag);
-      setTags((prevTags) => [...prevTags, newTag]); // Optionally re-fetch the tags list to include server-side updates
+      setTags((prevTags: Tag[]) => [...prevTags, newTag]); // Optionally re-fetch the tags list to include server-side updates
     } catch (err) {
-      setError(err);
+      setError(err as Error);
     }
   };
 

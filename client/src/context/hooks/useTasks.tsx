@@ -5,14 +5,14 @@ import { Task } from "../DataContext";
 export const useTasks = (initialTasks: Task[]) => {
   const [tasks, setTasks] = useState(initialTasks);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
       const response = await axios.get("http://localhost:3333/tasks");
       setTasks(
-        response.data.map((task) => ({
+        response.data.map((task: Task) => ({
           ...task,
           Tags: task.Tags || [],
         }))
@@ -20,7 +20,7 @@ export const useTasks = (initialTasks: Task[]) => {
       console.log("Fetched tasks:", response.data);
       setLoading(false);
     } catch (err) {
-      setError(err);
+      setError(err as Error);
       setLoading(false);
     }
   }, []);
@@ -36,7 +36,7 @@ export const useTasks = (initialTasks: Task[]) => {
       fetchTasks();
     } catch (err) {
       console.log(task);
-      setError(err);
+      setError(err as Error);
     }
   };
 
@@ -56,7 +56,7 @@ export const useTasks = (initialTasks: Task[]) => {
         return updatedTasks;
       });
     } catch (err) {
-      setError(err);
+      setError(err as Error);
       console.error("Failed to update task:", err);
     }
   };
@@ -67,7 +67,7 @@ export const useTasks = (initialTasks: Task[]) => {
       setTasks((prevTasks) => prevTasks.filter((t) => t.id !== id));
       console.log("Task deleted:", id);
     } catch (err) {
-      setError(err);
+      setError(err as Error);
     }
   };
 

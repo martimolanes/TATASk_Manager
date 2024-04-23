@@ -14,7 +14,7 @@ export type Tag = {
   color: string;
 };
 
-interface Task {
+export interface Task {
   id?: number;
   name: string;
   content: string;
@@ -44,9 +44,9 @@ export type Activity = {
 };
 
 interface DataContextType {
-  tasks: Task[];
-  activities: Activity[];
-  tags: Tag[]; // Add tags to the context type
+  tasks: Task[] | [];
+  activities: Activity[] | [];
+  tags: Tag[] | []; // Add tags to the context type
   setTasks: Dispatch<SetStateAction<Task[]>>;
   setActivities: Dispatch<SetStateAction<Activity[]>>;
   addTask: (task: Task) => Promise<void>;

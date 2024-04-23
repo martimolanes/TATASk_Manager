@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Task, useData } from "../context/DataContext";
+import React, { useContext, useState, useEffect, MouseEvent } from "react";
+import { Tag, Task, useData } from "../context/DataContext";
 import { TabContext } from "../context/TabContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -15,8 +15,10 @@ const Modal = ({
 }) => {
   if (!isOpen) return null;
 
-  const handleBackgroundClick = (event) => {
-    if (event.target.id === "modal-backdrop") {
+  const handleBackgroundClick = (event: MouseEvent<HTMLDivElement>) => {
+    // Use a type assertion to tell TypeScript the type of the target
+    const target = event.target as HTMLDivElement;
+    if (target.id === "modal-backdrop") {
       console.log("closing");
       onClose();
     }
@@ -69,12 +71,17 @@ const TagSelector = ({
   selectedTags,
   onSelectTag,
   onCreateTag,
+}: {
+  availableTags: Tag[];
+  selectedTags: number[];
+  onSelectTag: (tagId: number) => void;
+  onCreateTag: (tag: Tag) => void;
 }) => {
   const [newTagName, setNewTagName] = useState("");
   const [newTagColor, setNewTagColor] = useState("#000000"); // Default color
 
   const handleCreateTag = () => {
-    onCreateTag({ name: newTagName, color: newTagColor });
+    onCreateTag({ name: newTagName, color: newTagColor, id: -1 });
     setNewTagName("");
     setNewTagColor("#000000"); // Reset to default after creation
   };
@@ -135,24 +142,31 @@ const Tasks = () => {
     loading,
   } = useData();
   const { activeTab } = useContext(TabContext);
-  const [currentTask, setCurrentTask] = useState(null);
+  const [currentTask, setCurrentTask] = useState<Task | {}>({});
   const [editMode, setEditMode] = useState(false);
-  const [filteredTasks, setFilteredTasks] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState<Task[] | []>([]);
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
 
   const [activityFilter, setActivityFilter] = useState("");
-  const [linksToActivities, setLinksToActivities] = useState([]);
+  const [, setLinksToActivities] = useState<Task[] | []>([]);
 
-  const handleActivityFilterChange = (event) => {
+  const handleActivityFilterChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setActivityFilter(event.target.value);
   };
 
-  const handleLinkToActivity = (event) => {
+  const handleLinkToActivity = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const activityId = event.target.value;
-    setCurrentTask((prevTask) => ({
-      ...prevTask,
-      activityid: activityId !== "null" ? parseInt(activityId) : null,
-    }));
+    setCurrentTask((prevTask) => {
+      if (!prevTask) return null;
+      return {
+        ...prevTask,
+        activityid: activityId !== "null" ? parseInt(activityId) : null,
+      };
+    });
   };
 
   useEffect(() => {
@@ -187,7 +201,7 @@ const Tasks = () => {
           matchesTabFilter = startDate <= now && (!endDate || endDate >= now);
           break;
         case "Completed":
-          matchesTabFilter = endDate && endDate < now;
+          matchesTabFilter = endDate !== null && endDate < now;
           break;
         default:
           matchesTabFilter = true; // No tab filter applied or all tasks
@@ -197,8 +211,8 @@ const Tasks = () => {
       return matchesActivityFilter && matchesTabFilter;
     });
 
-    setFilteredTasks(filtered);
-    setLinksToActivities(filtered);
+    setFilteredTasks(filtered as Task[]);
+    setLinksToActivities(filtered as Task[]);
   }, [tasks, activeTab, activityFilter]);
 
   const handleNewTask = () => {
@@ -223,8 +237,8 @@ const Tasks = () => {
     setEditMode(true);
   };
 
-  const toggleTagSelection = (tagId) => {
-    setSelectedTags((prev) => {
+  const toggleTagSelection = (tagId: number) => {
+    setSelectedTags((prev: number[]) => {
       const currentIndex = prev.indexOf(tagId);
       const newSelectedTags = [...prev];
 
@@ -238,16 +252,16 @@ const Tasks = () => {
     });
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const taskWithTags = {
+    const taskWithTags: Task | {} = {
       ...currentTask,
-      Tags: tags.filter((tag) => selectedTags.includes(tag.id)),
+      Tags: tags.filter((tag: Tag) => selectedTags.includes(tag.id)),
     };
-    if (taskWithTags.id) {
-      await updateTask(taskWithTags);
+    if ((taskWithTags as Task).id) {
+      await updateTask(taskWithTags as Task);
     } else {
-      await addTask(taskWithTags);
+      await addTask(taskWithTags as Task);
     }
     console.log("submitting");
     setEditMode(false);
@@ -269,16 +283,16 @@ const Tasks = () => {
       return "bg-yellow-200";
     }
   };
-  const getActivityTitleById = (activityid) => {
+  const getActivityTitleById = (activityid: number) => {
     const activity = activities.find((act) => act.id === activityid);
     return activity ? activity.title : "No linked activity";
   };
 
-  const createTag = (tag) => {
+  const createTag = (tag: Tag) => {
     addTag({ ...tag, id: Math.floor(Math.random() * 1000) });
   };
 
-  const hexToRGBA = (hex, opacity) => {
+  const hexToRGBA = (hex: string, opacity: number) => {
     let r = parseInt(hex.slice(1, 3), 16),
       g = parseInt(hex.slice(3, 5), 16),
       b = parseInt(hex.slice(5, 7), 16);
@@ -286,7 +300,7 @@ const Tasks = () => {
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   };
 
-  const renderTags = (task) => {
+  const renderTags = (task: Task) => {
     if (task.Tags.length === 0) {
       return (
         <div className="absolute top-2 right-2">
@@ -334,7 +348,9 @@ const Tasks = () => {
                 <input
                   type="text"
                   id="name"
-                  value={currentTask ? currentTask.name : ""}
+                  value={
+                    currentTask && "name" in currentTask ? currentTask.name : ""
+                  }
                   onChange={(e) =>
                     setCurrentTask({ ...currentTask, name: e.target.value })
                   }
@@ -351,7 +367,11 @@ const Tasks = () => {
                 </label>
                 <textarea
                   id="content"
-                  value={currentTask ? currentTask.content : ""}
+                  value={
+                    currentTask && "content" in currentTask
+                      ? currentTask.content
+                      : ""
+                  }
                   onChange={(e) =>
                     setCurrentTask({ ...currentTask, content: e.target.value })
                   }
@@ -369,7 +389,11 @@ const Tasks = () => {
                 <input
                   type="date"
                   id="startDate"
-                  value={currentTask ? currentTask.startDate : ""}
+                  value={
+                    currentTask && "startDate" in currentTask
+                      ? currentTask.startDate
+                      : ""
+                  }
                   onChange={(e) =>
                     setCurrentTask({
                       ...currentTask,
@@ -390,7 +414,11 @@ const Tasks = () => {
                 <input
                   type="date"
                   id="endDate"
-                  value={currentTask ? currentTask.endDate : ""}
+                  value={
+                    currentTask && "endDate" in currentTask
+                      ? currentTask.endDate
+                      : ""
+                  }
                   onChange={(e) =>
                     setCurrentTask({ ...currentTask, endDate: e.target.value })
                   }
@@ -406,7 +434,7 @@ const Tasks = () => {
                 </label>
                 <select
                   id="activityFilter"
-                  value={currentTask?.activityid || "null"} // Reflect the current state
+                  value={(currentTask as Task)?.activityid || "null"} // Reflect the current state
                   onChange={handleLinkToActivity}
                   className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                 >
@@ -502,7 +530,7 @@ const Tasks = () => {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDeleteTask(task.id)}
+                      onClick={() => handleDeleteTask(task.id!)}
                       className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
                     >
                       Delete

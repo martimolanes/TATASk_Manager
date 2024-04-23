@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useData, Activity } from "../context/DataContext";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 
 // Assume the default start date is today for new activities
 const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -34,8 +34,8 @@ const Modal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg shadow-xl p-4 max-w-lg w-full">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center p-4">
+      <div className="bg-white rounded-lg shadow-xl p-4 max-w-lg w-full z-50">
         <button className="float-right text-xl font-semibold" onClick={onClose}>
           ×
         </button>
@@ -128,7 +128,13 @@ const Activities = () => {
 
   return (
     <>
-      <Modal isOpen={isViewing} onClose={handleClose} viewOnly={true}>
+      <button
+        onClick={handleNewActivity}
+        className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Create New Activity
+      </button>
+      <Modal isOpen={isViewing} onClose={handleClose}>
         {selectedActivity && (
           <div>
             <h3>Title: {selectedActivity.title}</h3>
@@ -156,10 +162,13 @@ const Activities = () => {
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-s"
                 value={currentActivity.title}
                 onChange={(e) =>
-                  setCurrentActivity((prev) => ({
-                    ...prev,
-                    title: e.target.value,
-                  }))
+                  setCurrentActivity((prev) => {
+                    if (prev === null) return null;
+                    return {
+                      ...prev,
+                      title: e.target.value,
+                    };
+                  })
                 }
                 required
               />
@@ -177,10 +186,13 @@ const Activities = () => {
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-s"
                 value={currentActivity.description}
                 onChange={(e) =>
-                  setCurrentActivity((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
+                  setCurrentActivity((prev) => {
+                    if (!prev) return null;
+                    return {
+                      ...prev,
+                      description: e.target.value,
+                    };
+                  })
                 }
                 rows={3}
               />
@@ -199,13 +211,16 @@ const Activities = () => {
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-s"
                 value={currentActivity.ActivityType.name}
                 onChange={(e) =>
-                  setCurrentActivity((prev) => ({
-                    ...prev,
-                    ActivityType: {
-                      ...prev.ActivityType,
-                      name: e.target.value,
-                    },
-                  }))
+                  setCurrentActivity((prev) => {
+                    if (!prev) return null;
+                    return {
+                      ...prev,
+                      ActivityType: {
+                        ...prev.ActivityType,
+                        name: e.target.value,
+                      },
+                    };
+                  })
                 }
               ></input>
             </div>
@@ -223,10 +238,13 @@ const Activities = () => {
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-s"
                 value={currentActivity.startDate.split("T")[0]} // Assuming the date comes in ISO format
                 onChange={(e) =>
-                  setCurrentActivity((prev) => ({
-                    ...prev,
-                    startDate: e.target.value,
-                  }))
+                  setCurrentActivity((prev) => {
+                    if (!prev) return null;
+                    return {
+                      ...prev,
+                      startDate: e.target.value,
+                    };
+                  })
                 }
                 required
               />
@@ -249,10 +267,13 @@ const Activities = () => {
                     : ""
                 }
                 onChange={(e) =>
-                  setCurrentActivity((prev) => ({
-                    ...prev,
-                    endDate: e.target.value,
-                  }))
+                  setCurrentActivity((prev) => {
+                    if (!prev) return null;
+                    return {
+                      ...prev,
+                      endDate: e.target.value,
+                    };
+                  })
                 }
               />
             </div>
@@ -282,7 +303,7 @@ const Activities = () => {
               placeholder="Search activities..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full py-2 pl-10 pr-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border border-gray-300 rounded shadow-sm bg-white"
+              className="w-full py-2 pl-10 pr-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border border-gray-300 rounded shadow-sm bg-white focus:border-blue-500"
             />
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
               <FontAwesomeIcon icon={faSearch} className="text-gray-500" />
@@ -290,41 +311,41 @@ const Activities = () => {
           </div>
         </div>
         <div className="flex flex-col m-4">
-          {activities 
-          .filter((activity) =>
-            activity.title.toLowerCase().includes(searchTerm.toLowerCase())
-          )        
-          .map((activity, index) => (
-            <div
-              className={`flex border-b border-gray-200 hover:bg-gray-100 p-4 ${
-                selectedActivity?.id === activity.id ? "bg-green-100" : ""
-              }`}
-              key={activity.id + "-" + index}
-              onClick={() => handleActivitySelect(activity)}
-            >
-              <div className="flex-1">{activity.title}</div>
-              <div className="flex-1">
-                {activity.ActivityType ? activity.ActivityType.name : "N/A"}
+          {activities
+            .filter((activity) =>
+              activity.title.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .map((activity, index) => (
+              <div
+                className={`flex border-b border-gray-200 hover:bg-gray-100 p-4 ${
+                  selectedActivity?.id === activity.id ? "bg-green-100" : ""
+                }`}
+                key={activity.id + "-" + index}
+                onClick={() => handleActivitySelect(activity)}
+              >
+                <div className="flex-1">{activity.title}</div>
+                <div className="flex-1">
+                  {activity.ActivityType ? activity.ActivityType.name : "N/A"}
+                </div>
+                <div className="flex-1">{activity.startDate}</div>
+                <div className="flex-1">{activity.endDate || "Ongoing"}</div>
+                <div className="flex-1">{getStatus(activity)}</div>
+                <div className="flex justify-center space-x-2">
+                  <button
+                    onClick={(e) => handleEditClick(e, activity)}
+                    className="px-2 py-1 bg-yellow-500 text-white rounded"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={(e) => handleDeleteClick(e, activity.id || -1)}
+                    className="px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-              <div className="flex-1">{activity.startDate}</div>
-              <div className="flex-1">{activity.endDate || "Ongoing"}</div>
-              <div className="flex-1">{getStatus(activity)}</div>
-              <div className="flex justify-center space-x-2">
-                <button
-                  onClick={(e) => handleEditClick(e, activity)}
-                  className="px-2 py-1 bg-yellow-500 text-white rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={(e) => handleDeleteClick(e, activity.id || -1)}
-                  className="px-2 py-1 bg-red-500 text-white rounded"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </>
