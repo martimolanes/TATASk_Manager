@@ -128,12 +128,6 @@ const Activities = () => {
 
   return (
     <>
-      <button
-        onClick={handleNewActivity}
-        className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Create New Activity
-      </button>
       <Modal isOpen={isViewing} onClose={handleClose}>
         {selectedActivity && (
           <div>
