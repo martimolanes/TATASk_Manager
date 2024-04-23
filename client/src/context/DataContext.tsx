@@ -1,139 +1,93 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+} from "react";
+import { useTasks } from "./hooks/useTasks";
+import { useActivities } from "./hooks/useActivities";
+import { useTags } from "./hooks/useTags"; // Make sure to import useTags
 
-export type Task = {
-  id: number;
-  content: string;
-  startDate: string;
-  endDate: string;
-  status: string;
-  activityId: number;
-};
-
-export type Activity = {
+export type Tag = {
   id: number;
   name: string;
+  color: string;
+};
+
+export interface Task {
+  id?: number;
+  name: string;
+  content: string;
   startDate: string;
   endDate?: string;
-  status: string;
-  activityType: string;
+  Tags: Tag[];
+  activityid?: number | null; // Link to an activity
+}
+
+export type Activity = {
+  id?: number;
+  title: string;
+  description: string;
+  url?: string;
+  startDate: string;
+  endDate: string;
+  ActivityType: {
+    id?: number;
+    name: string;
+  };
+  Status: {
+    id?: number;
+    title: string;
+    style: string;
+  };
+  Tags: Tag[];
 };
 
-type DataContextType = {
-  tasks: Task[];
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-  activities: Activity[];
-  setActivities: React.Dispatch<React.SetStateAction<Activity[]>>;
-  editActivity: (updatedActivity: Activity) => void;
-  deleteActivity: (activityId: number) => void;
-  editTask: (updatedTask: Task) => void;
-  deleteTask: (taskId: number) => void;
-};
+interface DataContextType {
+  tasks: Task[] | [];
+  activities: Activity[] | [];
+  tags: Tag[] | []; // Add tags to the context type
+  setTasks: Dispatch<SetStateAction<Task[]>>;
+  setActivities: Dispatch<SetStateAction<Activity[]>>;
+  addTask: (task: Task) => Promise<void>;
+  updateTask: (task: Task) => Promise<void>;
+  deleteTask: (id: number) => Promise<void>;
+  addActivity: (activity: Activity) => Promise<void>;
+  updateActivity: (activity: Activity) => Promise<void>;
+  deleteActivity: (id: number) => Promise<void>;
+  addTag: (tag: Tag) => Promise<void>; // Function to add a tag
+  loading: boolean;
+}
 
-const initialTasks: Task[] = [
-  {
-    id: 1,
-    content: "Frontend to Backend API Integration",
-    startDate: "2024-04-14",
-    endDate: "2024-04-26",
-    status: "Planning",
-    activityId: 1,
-  },
-  {
-    id: 2,
-    content: "Complete project documentation",
-    startDate: "2024-03-20",
-    endDate: "2024-04-26",
-    status: "On Going",
-    activityId: 1,
-  },
-  {
-    id: 3,
-    content: "Work on web design",
-    startDate: "2024-03-20",
-    endDate: "2024-04-26",
-    status: "Paused",
-    activityId: 1,
-  },
-  {
-    id: 3,
-    content: "Review PR from John",
-    startDate: "2024-03-21",
-    endDate: "2024-03-22",
-    status: "Completed",
-    activityId: 2,
-  },
-];
+const DataContext = createContext<DataContextType | null>(null);
 
-const initialActivities: Activity[] = [
-  {
-    id: 1,
-    name: "Project Work",
-    startDate: "2024-03-01",
-    endDate: "2024-03-31",
-    status: "Active",
-    activityType: "Job",
-  },
-  {
-    id: 2,
-    name: "Study Session",
-    startDate: "2024-03-20",
-    status: "Active",
-    activityType: "School",
-  },
-];
-
-const DataContext = createContext<DataContextType>({
-  tasks: [],
-  setTasks: () => {},
-  activities: [],
-  setActivities: () => {},
-  editActivity: () => {},
-  deleteActivity: () => {},
-  editTask: () => {},
-  deleteTask: () => {},
-});
-
-export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const [activities, setActivities] = useState<Activity[]>(initialActivities);
-
-  const editActivity = (updatedActivity: Activity) => {
-    setActivities((prevActivities) =>
-      prevActivities.map((activity) =>
-        activity.id === updatedActivity.id ? updatedActivity : activity
-      )
-    );
-  };
-
-  const deleteActivity = (activityId: number) => {
-    setActivities((prevActivities) =>
-      prevActivities.filter((activity) => activity.id !== activityId)
-    );
-  };
-
-  const editTask = (updatedTask: Task) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
-  };
-
-  const deleteTask = (taskId: number) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-  };
+export const DataProvider = ({ children }: { children: React.ReactNode }) => {
+  const { tasks, setTasks, addTask, updateTask, deleteTask } = useTasks([]);
+  const {
+    activities,
+    setActivities,
+    addActivity,
+    updateActivity,
+    deleteActivity,
+  } = useActivities([]);
+  const { tags, addTag, loading } = useTags(); // Use the useTags hook
 
   return (
     <DataContext.Provider
       value={{
         tasks,
         setTasks,
+        addTask,
+        updateTask,
+        deleteTask,
         activities,
         setActivities,
-        editActivity,
+        addActivity,
+        updateActivity,
         deleteActivity,
-        editTask,
-        deleteTask,
+        tags, // Provide tags through context
+        addTag,
+        loading, // Ensure loading state reflects all hooks
       }}
     >
       {children}
@@ -141,4 +95,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useData = () => useContext(DataContext);
+export const useData = () => {
+  const context = useContext(DataContext);
+  if (!context) {
+    throw new Error("useData must be used within a DataProvider");
+  }
+  return context;
+};
