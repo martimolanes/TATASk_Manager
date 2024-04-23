@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useData, Activity } from "../context/DataContext";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 // Assume the default start date is today for new activities
 const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -49,6 +51,7 @@ const Activities = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentActivity, setCurrentActivity] = useState<Activity | null>(null);
   const [isNew, setIsNew] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
     null
@@ -125,12 +128,6 @@ const Activities = () => {
 
   return (
     <>
-      <button
-        onClick={handleNewActivity}
-        className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Create New Activity
-      </button>
       <Modal isOpen={isViewing} onClose={handleClose} viewOnly={true}>
         {selectedActivity && (
           <div>
@@ -270,9 +267,34 @@ const Activities = () => {
       </Modal>
 
       <div className="p-4">
-        <h2 className="text-2xl font-bold mb-4">Activities</h2>
-        <div className="flex flex-col w-full">
-          {activities.map((activity, index) => (
+        <h2 className="text-2xl font-bold mb-4 ml-4">Activities</h2>
+        <div className="flex items-center mb-4 ml-4">
+          <button
+            onClick={handleNewActivity}
+            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center mr-4 w-42"
+          >
+            <FontAwesomeIcon icon={faPlus} className="mr-2" />
+            Create New Activity
+          </button>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search activities..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full py-2 pl-10 pr-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border border-gray-300 rounded shadow-sm bg-white"
+            />
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <FontAwesomeIcon icon={faSearch} className="text-gray-500" />
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col m-4">
+          {activities 
+          .filter((activity) =>
+            activity.title.toLowerCase().includes(searchTerm.toLowerCase())
+          )        
+          .map((activity, index) => (
             <div
               className={`flex border-b border-gray-200 hover:bg-gray-100 p-4 ${
                 selectedActivity?.id === activity.id ? "bg-green-100" : ""
