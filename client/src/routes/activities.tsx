@@ -133,6 +133,15 @@ const Activities = () => {
     handleEditActivity(activity);
   };
 
+  function formatDate(dateString: string) {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  }
+
   const handleDeleteClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     activityId: number
@@ -151,8 +160,13 @@ const Activities = () => {
             <h3>Title: {selectedActivity.title}</h3>
             <p>Description: {selectedActivity.description}</p>
             <p>Type: {selectedActivity.ActivityType.name}</p>
-            <p>Start Date: {selectedActivity.startDate}</p>
-            <p>End Date: {selectedActivity.endDate || "Ongoing"}</p>
+            <p>Start Date: {formatDate(selectedActivity.startDate)}</p>
+            <p>
+              End Date:{" "}
+              {selectedActivity.endDate
+                ? formatDate(selectedActivity.endDate)
+                : "Ongoing"}
+            </p>
           </div>
         )}
       </Modal>
@@ -338,8 +352,10 @@ const Activities = () => {
                 <div className="flex-1">
                   {activity.ActivityType ? activity.ActivityType.name : "N/A"}
                 </div>
-                <div className="flex-1">{activity.startDate}</div>
-                <div className="flex-1">{activity.endDate || "Ongoing"}</div>
+                <div className="flex-1">{formatDate(activity.startDate)}</div>
+                <div className="flex-1">
+                  {formatDate(activity.endDate) || "Ongoing"}
+                </div>
                 <div className="flex-1">{getStatus(activity)}</div>
                 <div className="flex justify-center space-x-2">
                   <button
