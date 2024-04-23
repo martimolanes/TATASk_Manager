@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Task, useData } from "../context/DataContext";
 import { TabContext } from "../context/TabContext";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Modal = ({
   isOpen,
@@ -438,13 +440,7 @@ const Tasks = () => {
               </div>
             </form>
           </Modal>
-          <button
-            onClick={handleNewTask}
-            className="mb-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-          >
-            Add New Task
-          </button>
-          <div className="mb-4">
+          <div className="mb-8, ml-8">
             <label
               htmlFor="activityFilter"
               className="block text-sm font-medium text-gray-700"
@@ -468,8 +464,8 @@ const Tasks = () => {
           </div>
 
           <div className="p-4">
-            <h2 className="text-2xl font-bold mb-4">Tasks</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <h2 className="text-2xl font-bold mb-4 ml-8">Tasks</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 m-8">
               {filteredTasks.map((task) => (
                 <div
                   key={task.id}
@@ -514,6 +510,12 @@ const Tasks = () => {
                   </div>
                 </div>
               ))}
+                <button
+                  onClick={handleNewTask}
+                  className="relative shadow rounded-lg p-4 bg-gray-300 hover:bg-gray-400 text-white font-bold w-48 h-48 flex items-center justify-center"
+                  >
+                  <FontAwesomeIcon icon={faPlus} size="3x" className="m-auto"/>
+                </button>
             </div>
           </div>
         </>
