@@ -470,7 +470,7 @@ const Tasks = () => {
           <div className="mb-8, ml-8">
             <label
               htmlFor="activityFilter"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 ml-4"
             >
               Filter by Activity
             </label>
@@ -478,7 +478,7 @@ const Tasks = () => {
               id="activityFilter"
               value={activityFilter}
               onChange={handleActivityFilterChange}
-              className="mt-1 block w-20% pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              className="mt-1 ml-4 block w-20% pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
             >
               <option value="">All Tasks</option>
               <option value="unlinked">Tasks without Activity</option>
