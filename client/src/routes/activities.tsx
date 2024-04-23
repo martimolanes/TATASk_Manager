@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, MouseEvent } from "react";
 import { useData, Activity } from "../context/DataContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -33,9 +33,27 @@ const Modal = ({
 }) => {
   if (!isOpen) return null;
 
+  const handleBackgroundClick = (event: MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLDivElement;
+    if (target.id === "modal-backdrop") {
+      console.log("closing");
+      onClose();
+    }
+    console.log("closing2");
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg shadow-xl p-4 max-w-lg w-full z-50">
+    <div
+      id="modal-backdrop"
+      className="fixed inset-0 z-50 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center p-4"
+      onClick={handleBackgroundClick}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl p-4 max-w-lg w-full z-50"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <button className="float-right text-xl font-semibold" onClick={onClose}>
           ×
         </button>
@@ -44,7 +62,6 @@ const Modal = ({
     </div>
   );
 };
-
 const Activities = () => {
   const { activities, deleteActivity, updateActivity, addActivity, loading } =
     useData();

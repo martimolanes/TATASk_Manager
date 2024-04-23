@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect, MouseEvent } from "react";
 import { Tag, Task, useData } from "../context/DataContext";
 import { TabContext } from "../context/TabContext";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const Modal = ({
   isOpen,
@@ -16,7 +16,6 @@ const Modal = ({
   if (!isOpen) return null;
 
   const handleBackgroundClick = (event: MouseEvent<HTMLDivElement>) => {
-    // Use a type assertion to tell TypeScript the type of the target
     const target = event.target as HTMLDivElement;
     if (target.id === "modal-backdrop") {
       console.log("closing");
@@ -538,12 +537,12 @@ const Tasks = () => {
                   </div>
                 </div>
               ))}
-                <button
-                  onClick={handleNewTask}
-                  className="relative shadow rounded-lg p-4 bg-gray-300 hover:bg-gray-400 text-white font-bold w-48 h-48 flex items-center justify-center"
-                  >
-                  <FontAwesomeIcon icon={faPlus} size="3x" className="m-auto"/>
-                </button>
+              <button
+                onClick={handleNewTask}
+                className="relative shadow rounded-lg p-4 bg-gray-300 hover:bg-gray-400 text-white font-bold w-48 h-48 flex items-center justify-center"
+              >
+                <FontAwesomeIcon icon={faPlus} size="3x" className="m-auto" />
+              </button>
             </div>
           </div>
         </>
