@@ -1,30 +1,52 @@
-# React + TypeScript + Vite
+# Client Setup Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## React + TypeScript + Vite
 
-Currently, two official plugins are available:
+This template offers a minimal setup featuring React in Vite with Hot Module Replacement (HMR) and ESLint configurations optimized for development and potential production use.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Plugins
 
-## Expanding the ESLint configuration
+- **[@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md)**: Utilizes Babel for Fast Refresh.
+- **[@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc)**: Employs SWC for Fast Refresh.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## ESLint Configuration
 
-- Configure the top-level `parserOptions` property like this:
+For production environments, enhance ESLint settings by enabling type-aware rules:
+
+1. **Parser Options**: Set top-level `parserOptions` for TypeScript integration.
+2. **Rules Enhancement**: Use stricter lint rules like `plugin:@typescript-eslint/recommended-type-checked`.
+3. **React Plugin**: Include `eslint-plugin-react` for React specific linting.
 
 ```js
 export default {
   // other rules...
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
+    ecmaVersion: "latest",
+    sourceType: "module",
+    project: ["./tsconfig.json", "./tsconfig.node.json"],
     tsconfigRootDir: __dirname,
   },
-}
+  // additional rules...
+};
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Running the Application
+
+To start the client application, follow these steps:
+
+1. **Install Dependencies**:
+   Navigate to the `client/` directory and run:
+
+   ```bash
+   bun install
+   ```
+
+2. **Launch the Application**:
+   Start the development server using:
+   ```bash
+   bun run dev
+   ```
+
+For a detailed walkthrough of client-side operations including setup, configurations, and features, refer to our comprehensive documentation:
+
+- **[Client Application Usage](../docs/client/application-usage.md)**: This document provides a full overview of client-side configurations, component usage, and more.
