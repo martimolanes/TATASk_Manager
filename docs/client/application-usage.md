@@ -47,3 +47,13 @@ App Routes
 ```
 
 The application provides a user-friendly interface across all pages, with the exception of the Landing page. This design facilitates user interaction and task management, thanks to its clear visuals. Furthermore, the Statistics page enhances user understanding by visually representing data through charts.
+
+## Further Documentation
+
+Explore more about the application's front-end architecture and features through the following resources:
+
+- **[Application Components](./application-components.md)**: Details the reusable UI components.
+- **[Application Context and Data](./application-context-data.md)**: Explains the context setup and data management strategy.
+- **[Application Routes](./application-routes.md)**: Provides a detailed breakdown of the routing architecture.
+
+Each document is designed to give you a deeper understanding of specific aspects of the front end, ensuring you have all the necessary information for development or modification purposes.
