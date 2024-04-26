@@ -3,6 +3,7 @@
 When you have your `postgres.yml` properly set up, this file should define your PostgreSQL and Adminer services. Here’s a quick recap of what happens when you run it:
 
 1. **Starting Docker Compose**:
+
    - Docker Compose reads your configuration file and starts the defined services. In our case, it will start the PostgreSQL database server and the Adminer interface.
 
 2. **What Happens**:
@@ -12,16 +13,16 @@ When you have your `postgres.yml` properly set up, this file should define your 
 ### Accessing the Data
 
 - **Through Adminer**:
+
   - Open a web browser and navigate to `http://localhost:9999`.
   - Log in with the PostgreSQL credentials defined in your `postgres.yml`.
   - According to your postgres.yml file, the credentials should be:
 
-    -  System: `PostgreSQL`
-    -  Server: `db`
-    -  Username: `postgres` (the default superuser account created by the PostgreSQL Docker image)
-    -  Password: `example` (as you've specified in your postgres.yml)
-    -  Database: You can leave this blank initially to log into the PostgreSQL server itself.
-
+    - System: `PostgreSQL`
+    - Server: `db`
+    - Username: `postgres` (the default superuser account created by the PostgreSQL Docker image)
+    - Password: `example` (as you've specified in your postgres.yml)
+    - Database: You can leave this blank initially to log into the PostgreSQL server itself.
 
 - **Using PostgreSQL in the Terminal**:
   - To interact with PostgreSQL through the terminal, you'll first access the terminal of your PostgreSQL Docker container:
@@ -50,3 +51,9 @@ When you have your `postgres.yml` properly set up, this file should define your 
 - **Backups**: Consider setting up backup strategies for your PostgreSQL data, especially if you're using it for important or production data.
 - **Persistence**: To ensure your data persists between container restarts, make sure to configure volumes in your Docker Compose file for the PostgreSQL service.
 - **Security**: Avoid using default passwords or exposing the database publicly without proper security measures in place, especially in production environments.
+
+## Further Documentation
+
+For a deeper understanding of our database architecture and detailed schema information, please refer to the following resources:
+
+- **[Database Schema](./database-schema.md)**: This document provides a detailed description of the database structure, including tables, relationships, and key indices.
