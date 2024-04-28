@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./wizardTATASK.png" alt="Wizard" width="600"/>
+</p>
+
 # Monorepo for Task/Activity Manager
 
 This repository houses a Task/Activity Manager application, employing a range of technologies to create a comprehensive platform for managing tasks and activities.
